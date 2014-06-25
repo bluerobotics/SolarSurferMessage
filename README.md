@@ -27,7 +27,7 @@ bitmap | 8 | each bit is an isolated value
 
 ## Message Formats
 
-Message formats are stored in the [src/formats.json](formats.json) file. Formats are defined by a defined by a unsigned integer and contain `name` and `payload` fields. The payload field contains the definition for an array of variables that makes up the comm format. Each variable definition is an object and must have a `name` and `type` defined. Variables of type `enum` and `bitmap` also must have a `map` defined. Maps for `enums` can have up to 256 values and maps for `bitmaps` can have up to 8 values.
+Message formats are stored in the [src/formats.json](src/formats.json) file. Formats are defined by a defined by a unsigned integer and contain `name` and `payload` fields. The payload field contains the definition for an array of variables that makes up the comm format. Each variable definition is an object and must have a `name` and `type` defined. Variables of type `enum` and `bitmap` also must have a `map` defined. Maps for `enums` can have up to 256 values and maps for `bitmaps` can have up to 8 values.
 
 To reduce duplicate variable definitions across formats, variable definitions can be defined in the upper level `shared` object. These definitions can be reference by defining subsequent variable definitions to the shared object key (a string) instead of an object.
 
