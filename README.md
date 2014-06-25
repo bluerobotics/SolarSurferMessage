@@ -4,7 +4,7 @@ Comm definition and supporting libraries for the [SolarSurfer](http://blueroboti
 
 ## Overview
 
-The project defines the command and telemetry definitions for the SolarSurfer project. In addition to the format definitions, JavaScript and C libraries are included herein.
+The project defines the command and telemetry definitions for the SolarSurfer project. JavaScript and C libraries are included to ease encoding and decoding messages.
 
 ## Data Types
 
@@ -31,9 +31,22 @@ Message formats are stored in the [src/formats.json](src/formats.json) file. For
 
 To reduce duplicate variable definitions across formats, variable definitions can be defined in the upper level `shared` object. These definitions can be reference by defining subsequent variable definitions to the shared object key (a string) instead of an object.
 
-## Usage
+## Library API
 
-Todo
+The JavaScript and C libraries have identical APIs.
+
+* `SolarSurferComm.encode(msg)` - returns a byte array of the supplied message
+* `SolarSurferComm.decode(byte_array)` - returns the message represented by the supplied byte_array
+
+A typical application looks like this:
+
+```javascript
+var msg = {
+    format: 1,
+    version: 1
+}
+var byte_array = SolarSurferComm.encode(msg);
+```
 
 ## Change History
 
