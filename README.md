@@ -25,9 +25,9 @@ double | 64 | -1.7E308 .. 1.7E308
 enum | 8 | the entire value is used in a lookup map
 bitmap | 8 | each bit is an isolated value
 
-## Formats
+## Message Formats
 
-Message formats are stored in the [src/formats.json](formats.json) file. Formats are defined by a defined by a unsigned integer and contain `name` and `payload` fields. The payload field contains the definition for an array of variables that makes up the comm format. Each variable definition is an object and must have a `name` and `type` defined. Variables of type `enum` and `bitmap` also must have a `map` defined. Maps for `enum`s can have up to 256 values and maps for `bitmap`s can have up to 8 values.
+Message formats are stored in the [src/formats.json](formats.json) file. Formats are defined by a defined by a unsigned integer and contain `name` and `payload` fields. The payload field contains the definition for an array of variables that makes up the comm format. Each variable definition is an object and must have a `name` and `type` defined. Variables of type `enum` and `bitmap` also must have a `map` defined. Maps for `enums` can have up to 256 values and maps for `bitmaps` can have up to 8 values.
 
 To reduce duplicate variable definitions across formats, variable definitions can be defined in the upper level `shared` object. These definitions can be reference by defining subsequent variable definitions to the shared object key (a string) instead of an object.
 
@@ -41,4 +41,5 @@ This project uses [semantic versioning](http://semver.org/).
 
 ### v0.1.0 - tbd
 
+* Message format v1
 * Initial release
