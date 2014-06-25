@@ -1,0 +1,36 @@
+{
+    "version": "1",
+    "shared": {
+        "format": {
+            "type": "uint8_t",
+            "size": 1
+        },
+        "version": {
+            "type": "uint8_t",
+            "size": 1
+        }
+    },
+    "formats": {
+        "0": {
+            "name": "test",
+            "payload": [
+                "format",
+                "version"
+            ]
+        },
+        "1": {
+            "name": "tlm/status",
+            "payload": [
+                "format",
+                "version"
+            ]
+        },
+        "2": {
+            "name": "cmd/control",
+            "payload": [
+                "format",
+                "version"
+            ]
+        }
+    }
+}
