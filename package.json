@@ -16,10 +16,10 @@
     "url": "https://github.com/bluerobotics/SolarSurferMessage/issues"
   },
   "homepage": "https://github.com/bluerobotics/SolarSurferMessage",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "mocha": "^1.20.1",
-    "expect.js": "^0.3.1"
+    "chai": "^1.9.1",
+    "lodash": "^2.4.1",
+    "mocha": "^1.20.1"
   }
 }

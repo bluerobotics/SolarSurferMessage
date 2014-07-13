@@ -1,4 +1,5 @@
 var fs = require('fs');
+var _ = require('lodash');
 
 // declare static class
 function Message() {}
@@ -22,15 +23,24 @@ Message.types = {
   "char": {"size": 1}
 };
 
-// custom configure exception
-Message.ConfigureException = function(msg) {
-  this.msg = msg;
-};
+// custom exceptions
+var custom_errors = [
+  'FormatNameException',
+  'FormatPayloadException',
+  'FormatDataTypeException',
+  'FormatRequiredFieldException',
+  'FormatSharedFieldException',
+  'FormatLengthException',
+  'DecodeException'];
+for(var i = 0; i < custom_errors.length; i++) {
+  Message[custom_errors[i]] = function(message) { this.message = message; };
+  Message[custom_errors[i]].prototype = new Error();
+}
 
 // custom decode exception
-Message.DecodeException = function(msg) {
-  this.msg = msg;
-};
+// Message.DecodeException = function(msg) {
+//   this.msg = msg;
+// };
 
 // custom decode exception
 Message.loadConfigFile = function(file) {
@@ -51,17 +61,44 @@ Message.configure = function(config) {
 
     // it should have a name
     if(format.name === undefined)
-      throw new Message.ConfigureException('Format ' + String(i) + ' should have a name');
+      throw new Message.FormatNameException('Format ' + String(i) + ' should have a name');
 
     // it should have a payload
     if(format.payload === undefined)
-      throw new Message.ConfigureException('Format ' + String(i) + ' should have a name');
+      throw new Message.FormatPayloadException('Format ' + String(i) + ' should have a payload');
 
-    // expand shared fields
-    // for(var i = 0; i < config.formats; i++) {
-    // }
+    // parse fields
+    var sum = 0;
+    for(var j = 0; j < format.payload.length; j++) {
+      var field = format.payload[j];
+      // expand share field
+      if(typeof field == 'string') {
+        var shared = config.shared[field];
+        if(shared === undefined)
+          throw new Message.FormatSharedFieldException('Shared field ' + field + ' not found');
+        else field = _.clone(shared, true);
+      }
+
+      // set qty to 1
+      if(field.qty === undefined)
+        field.qty = 1;
+
+      // check field type
+      if(Message.types[field.type] === undefined)
+        throw new Message.FormatDataTypeException('Field type ' + field.type + ' not found');
+
+      // sum
+      sum += field.qty * Message.types[field.type].size;
+
+      // re-set in case this was originally a string
+      format.payload[j] = field;
+    }
 
     // make sure the length adds up to 50 bytes
+    if(sum != 50)
+      throw new Message.FormatLengthException('Format length ' + String(sum) + ' should be 50');
+
+    // check required fields
 
     // save format to class
     this.formats[i] = format;
@@ -80,18 +117,18 @@ Message.decode = function(packet) {
   if(packet.length != 50)
     throw new Message.DecodeException('Bad packet length ' + String(packet.length));
 
-  // all packets must a version at 0
+  // all packets must have a version at 0
   var version = this.decodeBytes(packet.charAt(0), 'uint8_t');
   if(version != this.version)
     throw new Message.DecodeException('Unknown version ' + String(version));
 
-  // all packets must a format at 1
+  // all packets must have a format at 1
   var format_index = this.decodeBytes(packet.charAt(1), 'uint8_t');
   var format = this.formats[format_index];
   if(format === undefined)
     throw new Message.DecodeException('Unknown format ' + String(format_index));
 
-  // all packets must a checksum at 48 and 49
+  // all packets must have a checksum at 48 and 49
   var checksum = this.decodeBytes(packet.substring(48, 50), 'uint16_t');
   var actual_checksum = this.crc16(packet);
   if(checksum != actual_checksum)
