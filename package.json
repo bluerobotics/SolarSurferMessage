@@ -1,0 +1,25 @@
+{
+  "name": "SolarSurferMessage",
+  "version": "0.0.0",
+  "description": "The communication standard for the SolarSurfer project.",
+  "scripts": {
+    "test": "mocha -w --reporter spec",
+    "makeclib": "node src/makeclib.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bluerobotics/SolarSurferMessage.git"
+  },
+  "author": "BlueRobotics",
+  "license": "Apache v2",
+  "bugs": {
+    "url": "https://github.com/bluerobotics/SolarSurferMessage/issues"
+  },
+  "homepage": "https://github.com/bluerobotics/SolarSurferMessage",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "mocha": "^1.20.1",
+    "expect.js": "^0.3.1"
+  }
+}

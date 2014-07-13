@@ -1,36 +1,86 @@
 {
-    "version": "1",
-    "shared": {
-        "format": {
-            "type": "uint8_t",
-            "size": 1
-        },
-        "version": {
-            "type": "uint8_t",
-            "size": 1
-        }
+  "version": "1",
+  "shared": {
+    "version": {
+      "type": "uint8_t"
     },
-    "formats": {
-        "0": {
-            "name": "test",
-            "payload": [
-                "format",
-                "version"
-            ]
-        },
-        "1": {
-            "name": "tlm/status",
-            "payload": [
-                "format",
-                "version"
-            ]
-        },
-        "2": {
-            "name": "cmd/control",
-            "payload": [
-                "format",
-                "version"
-            ]
-        }
+    "format": {
+      "type": "uint8_t"
+    },
+    "checksum": {
+      "type": "uint16_t"
     }
+  },
+  "formats": {
+    "0": {
+      "name": "test/string",
+      "payload": [
+        "version",
+        "format",
+        {
+          "name": "message",
+          "type": "char",
+          "qty": 46
+        },
+        "checksum"
+      ]
+    },
+    "1": {
+      "name": "test/mixed",
+      "payload": [
+        "version",
+        "format",
+        {
+          "name": "uint8_t",
+          "type": "uint8_t"
+        },
+        {
+          "name": "int8_t",
+          "type": "int8_t"
+        },
+        {
+          "name": "enum",
+          "type": "enum",
+          "enum": {
+          	"0": "this",
+          	"1": "that"
+          }
+        },
+        {
+          "name": "bitmap",
+          "type": "bitmap",
+          "bitmap": {
+          	"0": "pos_name0",
+          	"1": "pos_name1"
+          }
+        },
+        {
+          "name": "convert",
+          "type": "int8_t",
+          "conversion": {
+          	"raw_units": "counts",
+          	"units": "V",
+          	"coeffs": [0, 1]
+          }
+        },
+        "checksum"
+      ]
+    },
+    "2": {
+      "name": "tlm/status",
+      "payload": [
+        "version",
+        "format",
+        "checksum"
+      ]
+    },
+    "3": {
+      "name": "cmd/control",
+      "payload": [
+        "version",
+        "format",
+        "checksum"
+      ]
+    }
+  }
 }
