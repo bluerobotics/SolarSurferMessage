@@ -1,31 +1,6 @@
-// define(function () {
-//     return {
-//         toPackets: function (message) {
-//             return 'Hello World';
-//         },
-//         fromPackets: function (packets) {
-//             return 'Hello World';
-//         },
-//         hex2a: function (hexx) {
-//           var hex = hexx.toString();//force conversion
-//           var str = '';
-//           for (var i = 0; i < hex.length; i += 2)
-//           str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-//           return str;
-//         },
-//         a2hex: function (str) {
-//           var arr = [];
-//           for (var i = 0, l = str.length; i < l; i ++) {
-//           var hex = Number(str.charCodeAt(i)).toString(16);
-//           arr.push(hex);
-//           }
-//           return arr.join('');
-//         }
-//     };
-// });
+var fs = require('fs');
 
-
-// constructor
+// declare static class
 function Message() {}
 
 // default config
@@ -57,6 +32,13 @@ Message.DecodeException = function(msg) {
   this.msg = msg;
 };
 
+// custom decode exception
+Message.loadConfigFile = function(file) {
+  if(file === undefined) file = 'src/formats.json';
+  var config = fs.readFileSync(file, 'utf8');
+  this.configure(JSON.parse(config));
+};
+
 // load message formats
 Message.configure = function(config) {
   // set version
@@ -64,7 +46,7 @@ Message.configure = function(config) {
 
   // build formats
   this.formats = {};
-  for(var i = 0; i < config.formats; i++) {
+  Object.keys(config.formats).forEach(function(i) {
     var format = config.formats[i];
 
     // it should have a name
@@ -76,13 +58,14 @@ Message.configure = function(config) {
       throw new Message.ConfigureException('Format ' + String(i) + ' should have a name');
 
     // expand shared fields
-    for(var i = 0; i < config.formats; i++) {
+    // for(var i = 0; i < config.formats; i++) {
+    // }
 
     // make sure the length adds up to 50 bytes
 
     // save format to class
     this.formats[i] = format;
-  }
+  }, this);
 };
 
 // encode message
@@ -127,6 +110,21 @@ Message.decode = function(packet) {
   return {};
 };
 
+//         hex2a: function (hexx) {
+//           var hex = hexx.toString();//force conversion
+//           var str = '';
+//           for (var i = 0; i < hex.length; i += 2)
+//           str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+//           return str;
+//         },
+//         a2hex: function (str) {
+//           var arr = [];
+//           for (var i = 0, l = str.length; i < l; i ++) {
+//           var hex = Number(str.charCodeAt(i)).toString(16);
+//           arr.push(hex);
+//           }
+//           return arr.join('');
+//         }
 
 // export the app factory for the test package
 module.exports = Message;

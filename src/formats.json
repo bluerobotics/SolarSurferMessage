@@ -31,15 +31,15 @@
         "version",
         "format",
         {
-          "name": "uint8_t",
+          "name": "test_uint8_t",
           "type": "uint8_t"
         },
         {
-          "name": "int8_t",
+          "name": "test_int8_t",
           "type": "int8_t"
         },
         {
-          "name": "enum",
+          "name": "test_enum",
           "type": "enum",
           "enum": {
           	"0": "this",
@@ -47,7 +47,7 @@
           }
         },
         {
-          "name": "bitmap",
+          "name": "test_bitmap",
           "type": "bitmap",
           "bitmap": {
           	"0": "pos_name0",
@@ -55,7 +55,7 @@
           }
         },
         {
-          "name": "convert",
+          "name": "test_convert",
           "type": "int8_t",
           "conversion": {
           	"raw_units": "counts",
