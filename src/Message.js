@@ -8,19 +8,19 @@ function Message() {}
 Message.version = undefined;
 Message.formats = {};
 Message.types = {
-  "uint8_t": {"size": 1},
-  "uint16_t": {"size": 2},
-  "uint32_t": {"size": 4},
-  "uint64_t": {"size": 8},
-  "int8_t": {"size": 1},
-  "int16_t": {"size": 2},
-  "int32_t": {"size": 4},
-  "int64_t": {"size": 8},
-  "float": {"size": 4},
-  "double": {"size": 8},
-  "enum": {"size": 1},
-  "bitmap": {"size": 1},
-  "char": {"size": 1}
+  'uint8_t': {'size': 1},
+  'uint16_t': {'size': 2},
+  'uint32_t': {'size': 4},
+  'uint64_t': {'size': 8},
+  'int8_t': {'size': 1},
+  'int16_t': {'size': 2},
+  'int32_t': {'size': 4},
+  'int64_t': {'size': 8},
+  'float': {'size': 4},
+  'double': {'size': 8},
+  'enum': {'size': 1},
+  'bitmap': {'size': 1},
+  'char': {'size': 1}
 };
 
 // custom exceptions
@@ -31,7 +31,11 @@ var custom_errors = [
   'FormatRequiredFieldException',
   'FormatSharedFieldException',
   'FormatLengthException',
-  'DecodeException'];
+  'DecodeLengthException',
+  'DecodeVersionException',
+  'DecodeFormatException',
+  'DecodeChecksumException',
+  'DecodeValueException'];
 for(var i = 0; i < custom_errors.length; i++) {
   Message[custom_errors[i]] = function(message) { this.message = message; };
   Message[custom_errors[i]].prototype = new Error();
@@ -71,7 +75,6 @@ Message.configure = function(config) {
     var sum = 0;
     for(var j = 0; j < format.payload.length; j++) {
       var field = format.payload[j];
-      console.log(j, field)
       // expand share field
       if(typeof field == 'string') {
         var shared = config.shared[field];
@@ -120,27 +123,30 @@ Message.encode = function(message) {
 };
 
 // decode message
-Message.decode = function(packet) {
+Message.decode = function(packet_hex_string) {
+  // convert to byte array
+  packet = this.hexToBytes(packet_hex_string);
+
   // incoming packet must be a 50-character byte array
-  if(packet.length != 50)
-    throw new Message.DecodeException('Bad packet length "' + String(packet.length) + '"');
+  if(packet.length < 4)
+    throw new Message.DecodeLengthException('All packets must be at least 4 bytes long');
 
   // all packets must have a version at 0
-  var version = this.decodeBytes(packet.charAt(0), 'uint8_t');
+  var version = this.decodeBytes(packet[0], 'uint8_t');
   if(version != this.version)
-    throw new Message.DecodeException('Unknown version "' + String(version) + '"');
+    throw new Message.DecodeVersionException('Unknown version "' + String(version) + '"');
 
   // all packets must have a format at 1
-  var format_index = this.decodeBytes(packet.charAt(1), 'uint8_t');
+  var format_index = this.decodeBytes(packet[1], 'uint8_t');
   var format = this.formats[format_index];
   if(format === undefined)
-    throw new Message.DecodeException('Unknown format "' + String(format_index) + '"');
+    throw new Message.DecodeFormatException('Unknown format "' + String(format_index) + '"');
 
   // all packets must have a checksum at 48 and 49
   var checksum = this.decodeBytes(packet.substring(48, 50), 'uint16_t');
   var actual_checksum = this.crc16(packet);
   if(checksum != actual_checksum)
-    throw new Message.DecodeException('Checksum "' + String(checksum) + '" should be "' + String(actual_checksum) + '"');
+    throw new Message.DecodeChecksumException('Checksum "' + String(checksum) + '" should be "' + String(actual_checksum) + '"');
 
   // special image handling
   // if()
@@ -155,21 +161,38 @@ Message.decode = function(packet) {
   return {};
 };
 
-//         hex2a: function (hexx) {
-//           var hex = hexx.toString();//force conversion
-//           var str = '';
-//           for (var i = 0; i < hex.length; i += 2)
-//           str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-//           return str;
-//         },
-//         a2hex: function (str) {
-//           var arr = [];
-//           for (var i = 0, l = str.length; i < l; i ++) {
-//           var hex = Number(str.charCodeAt(i)).toString(16);
-//           arr.push(hex);
-//           }
-//           return arr.join('');
-//         }
+// encode message
+Message.hexToBytes = function(hex) {
+  // force conversion
+  hex = hex.toString();
 
-// export the app factory for the test package
+  var bytes = [];
+  for (var i = 0; i < hex.length; i += 2)
+    bytes.push(parseInt(hex.substr(i, 2), 16));
+
+  return bytes;
+};
+
+Message.hexToAscii = function(hex) {
+  // force conversion
+  hex = hex.toString();
+
+  var str = '';
+  for (var i = 0; i < hex.length; i += 2)
+    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+
+  return str;
+};
+
+Message.asciiToHex = function(str) {
+  var arr = [];
+  for (var i = 0, l = str.length; i < l; i ++) {
+    var hex = Number(str.charCodeAt(i)).toString(16);
+    arr.push(hex);
+  }
+
+  return arr.join('');
+};
+
+// node export
 module.exports = Message;

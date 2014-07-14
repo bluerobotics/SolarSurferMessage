@@ -14,12 +14,15 @@ describe('Message', function() {
       "version": "1",
       "shared": {
         "version": {
+          "name": "version",
           "type": "uint8_t"
         },
         "format": {
+          "name": "format",
           "type": "uint8_t"
         },
         "checksum": {
+          "name": "checksum",
           "type": "uint16_t"
         }
       },
@@ -39,6 +42,8 @@ describe('Message', function() {
         }
       }
     };
+
+    // note to self: do not call Message.configure() because it is under test in this script
   });
 
   describe('the configure function', function() {
@@ -71,13 +76,14 @@ describe('Message', function() {
     });
 
     it('should error if format payload length is larger than 340 bytes', function(){
+      // 340 is the RockBlock / RockSevenCore API send limit
+      // TODO: message TO the RockBlock can only be 270 bytes
+
       config.formats[0].payload[2].qty = 400;
       expect(function(){
         Message.configure(config);
       }).to.throw(Message.FormatLengthException);
     });
-
-    // TODO: message TO the RockBlock can only be 270 bytes
 
     it('should error if version is not the first field', function(){
       config.formats[0].payload.splice(0, 1);
@@ -99,24 +105,34 @@ describe('Message', function() {
         Message.configure(config);
       }).to.throw(Message.FormatRequiredFieldException);
     });
-  });
 
-  describe('the decode function', function() {
-    // var post_data;
-
-    beforeEach(function(){
+    it('should not error for a valid config', function(){
       Message.configure(config);
     });
+  });
 
-    // it('should throw an error for an incorrect correct packet length', function(done){
-    //   // create msg
-    //   comm.hex2a
+  describe('the hexToBytes function', function() {
+    it('should convert a string of hex characters to a byte array', function(){
+      var hex = '4252'; // B(lue) R(robotics)
+      var bytes = Message.hexToBytes(hex);
+      expect(bytes).to.deep.equal([66, 82]);
+    });
+  });
 
-    //   // send request
-    //   request(api).post('/raw/tlm')
-    //     .send(post_data)
-    //     .expect(401, done);
-    // });
+  describe('the hexToAscii function', function() {
+    it('should convert a string of hex characters to an ascii string', function(){
+      var hex = '4252'; // B(lue) R(robotics)
+      var str = Message.hexToAscii(hex);
+      expect(str).to.equal('BR');
+    });
+  });
+
+  describe('the asciiToHex function', function() {
+    it('should convert an ascii string to a string of hex characters', function(){
+      var str = 'BR';
+      var hex = Message.asciiToHex(str);
+      expect(hex).to.equal('4252');
+    });
   });
 
 });
