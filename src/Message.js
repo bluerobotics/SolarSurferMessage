@@ -151,14 +151,30 @@ Message.decode = function(packet_hex_string) {
   if(checksum != actual_checksum)
     throw new Message.DecodeChecksumException('Checksum "' + checksum + '" should be "' + actual_checksum + '"');
 
-  // special image handling
-  // if()
-
   // expand packet
   var message = {};
-  // for(var i = 0; i < format.payload.length; i++) {
-  //   // tbd
-  // }
+  for(var i = 0; i < format.payload.length; i++) {
+    var field = format.payload[i];
+    var data_type_size = Message.types[field.type].size;
+
+    // decode field values
+    message[field.name] = [];
+    for(var j = 0; j < field.qty; j++) {
+      var raw = packet.splice(0, data_type_size);
+      message[field.name].push(this.decodeValue(this.bytesToHex(raw), field.type));
+    }
+
+    // flatten if qty is one
+    if(field.qty == 1)
+      message[field.name] = message[field.name][0];
+
+    // concat string types
+    else if(field.type == 'char')
+      message[field.name] = message[field.name].join('');
+  }
+
+  // special image handling - cache pieces and only return image once all are collected
+  // if()
 
   // return decoded message
   return message;
@@ -171,6 +187,8 @@ Message.decodeValue = function(input, type) {
   // unsigned integer types
   if(type.substr(0, 4) == 'uint')
     return input;
+  else if(type == 'char')
+    return this.hexToAscii(input);
 };
 
 Message.hexToBytes = function(hex) {

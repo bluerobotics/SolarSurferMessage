@@ -156,7 +156,13 @@ describe('Message', function() {
     });
 
     it('should not error for a valid packet', function(){
-      Message.decode(packet);
+      var message = Message.decode(packet);
+      expect(message).to.deep.equal({
+        version: '1',
+        format: '0',
+        message: 'The SolarSurfer is going to Hawaii! Hopefully.',
+        checksum: '8a40'
+      });
     });
   });
 
