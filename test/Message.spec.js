@@ -70,11 +70,34 @@ describe('Message', function() {
       }).to.throw(Message.FormatDataTypeException);
     });
 
-    it('should error if format payload length is not 50 bytes', function(){
-      config.formats[0].payload[2].qty = 40;
+    it('should error if format payload length is larger than 340 bytes', function(){
+      config.formats[0].payload[2].qty = 400;
       expect(function(){
         Message.configure(config);
       }).to.throw(Message.FormatLengthException);
+    });
+
+    // TODO: message TO the RockBlock can only be 270 bytes
+
+    it('should error if version is not the first field', function(){
+      config.formats[0].payload.splice(0, 1);
+      expect(function(){
+        Message.configure(config);
+      }).to.throw(Message.FormatRequiredFieldException);
+    });
+
+    it('should error if format is not the second field', function(){
+      config.formats[0].payload.splice(1, 1);
+      expect(function(){
+        Message.configure(config);
+      }).to.throw(Message.FormatRequiredFieldException);
+    });
+
+    it('should error if version is not the checksum field', function(){
+      config.formats[0].payload.splice(-1, 1);
+      expect(function(){
+        Message.configure(config);
+      }).to.throw(Message.FormatRequiredFieldException);
     });
   });
 

@@ -61,21 +61,22 @@ Message.configure = function(config) {
 
     // it should have a name
     if(format.name === undefined)
-      throw new Message.FormatNameException('Format ' + String(i) + ' should have a name');
+      throw new Message.FormatNameException('Format "' + String(i) + '" should have a name');
 
     // it should have a payload
     if(format.payload === undefined)
-      throw new Message.FormatPayloadException('Format ' + String(i) + ' should have a payload');
+      throw new Message.FormatPayloadException('Format "' + String(i) + '" should have a payload');
 
     // parse fields
     var sum = 0;
     for(var j = 0; j < format.payload.length; j++) {
       var field = format.payload[j];
+      console.log(j, field)
       // expand share field
       if(typeof field == 'string') {
         var shared = config.shared[field];
         if(shared === undefined)
-          throw new Message.FormatSharedFieldException('Shared field ' + field + ' not found');
+          throw new Message.FormatSharedFieldException('Shared field "' + field + '" not found');
         else field = _.clone(shared, true);
       }
 
@@ -85,7 +86,7 @@ Message.configure = function(config) {
 
       // check field type
       if(Message.types[field.type] === undefined)
-        throw new Message.FormatDataTypeException('Field type ' + field.type + ' not found');
+        throw new Message.FormatDataTypeException('Field type "' + field.type + '" not found');
 
       // sum
       sum += field.qty * Message.types[field.type].size;
@@ -95,10 +96,17 @@ Message.configure = function(config) {
     }
 
     // make sure the length adds up to 50 bytes
-    if(sum != 50)
-      throw new Message.FormatLengthException('Format length ' + String(sum) + ' should be 50');
+    if(sum > 340)
+      throw new Message.FormatLengthException('Format length "' + String(sum) + '" should be less than 340');
 
     // check required fields
+    if(format.payload[0].name != 'version' || format.payload[1].type != 'uint8_t')
+      throw new Message.FormatRequiredFieldException('Field "version" should be the first field in the format.');
+    if(format.payload[1].name != 'format' || format.payload[1].type != 'uint8_t')
+      throw new Message.FormatRequiredFieldException('Field "format" should be the second field in the format.');
+    var last_idx = format.payload.length - 1;
+    if(format.payload[last_idx].name != 'checksum' || format.payload[last_idx].type != 'uint16_t')
+      throw new Message.FormatRequiredFieldException('Field "checksum" should be the last field in the format.');
 
     // save format to class
     this.formats[i] = format;
@@ -115,24 +123,24 @@ Message.encode = function(message) {
 Message.decode = function(packet) {
   // incoming packet must be a 50-character byte array
   if(packet.length != 50)
-    throw new Message.DecodeException('Bad packet length ' + String(packet.length));
+    throw new Message.DecodeException('Bad packet length "' + String(packet.length) + '"');
 
   // all packets must have a version at 0
   var version = this.decodeBytes(packet.charAt(0), 'uint8_t');
   if(version != this.version)
-    throw new Message.DecodeException('Unknown version ' + String(version));
+    throw new Message.DecodeException('Unknown version "' + String(version) + '"');
 
   // all packets must have a format at 1
   var format_index = this.decodeBytes(packet.charAt(1), 'uint8_t');
   var format = this.formats[format_index];
   if(format === undefined)
-    throw new Message.DecodeException('Unknown format ' + String(format_index));
+    throw new Message.DecodeException('Unknown format "' + String(format_index) + '"');
 
   // all packets must have a checksum at 48 and 49
   var checksum = this.decodeBytes(packet.substring(48, 50), 'uint16_t');
   var actual_checksum = this.crc16(packet);
   if(checksum != actual_checksum)
-    throw new Message.DecodeException('Checksum ' + String(checksum) + ' should be ' + String(actual_checksum));
+    throw new Message.DecodeException('Checksum "' + String(checksum) + '" should be "' + String(actual_checksum) + '"');
 
   // special image handling
   // if()
