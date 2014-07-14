@@ -111,11 +111,81 @@ describe('Message', function() {
     });
   });
 
+  describe('the decode function', function() {
+    var packet;
+
+    beforeEach(function(){
+      packet = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792e8a40';
+
+      Message.configure(config);
+    });
+
+    it('should error a packet without the required fields', function(){
+      expect(function(){
+        // missing version, format, and checksum
+        Message.decode('');
+      }).to.throw(Message.DecodeLengthException);
+    });
+
+    it('should error if the version does not match', function(){
+      expect(function(){
+        // version is 0 (should be 1)
+        Message.decode('00000000');
+      }).to.throw(Message.DecodeVersionException);
+    });
+
+    it('should error if the format cannot be found', function(){
+      expect(function(){
+        // correct version (1), incorrect format (99)
+        Message.decode('01990000');
+      }).to.throw(Message.DecodeFormatException);
+    });
+
+    it('should error for an incorrect packet length', function(){
+      expect(function(){
+        // should be a full 50 bytes
+        Message.decode(packet.substr(0, 48*2));
+      }).to.throw(Message.DecodeLengthException);
+    });
+
+    it('should error if the checksum fails', function(){
+      expect(function(){
+        // checksum of 0000 is probably wrong...
+        Message.decode(packet.substr(0, 48*2) + '0000');
+      }).to.throw(Message.DecodeChecksumException);
+    });
+
+    it('should not error for a valid packet', function(){
+      Message.decode(packet);
+    });
+  });
+
+  describe('the decodeValue function', function() {
+    it('should error if the data type is not found', function(){
+      expect(function(){
+        Message.decodeValue(0, 'uint5_t');
+      }).to.throw(Message.DecodeValueException);
+    });
+
+    it('should convert a uint8_t to a number', function(){
+      var output = Message.decodeValue(10, 'uint8_t');
+      expect(output).to.equal(10);
+    });
+  });
+
   describe('the hexToBytes function', function() {
     it('should convert a string of hex characters to a byte array', function(){
       var hex = '4252'; // B(lue) R(robotics)
       var bytes = Message.hexToBytes(hex);
       expect(bytes).to.deep.equal([66, 82]);
+    });
+  });
+
+  describe('the bytesToHex function', function() {
+    it('should convert a byte array to a string of hex characters', function(){
+      var bytes = [66, 82]; // B(lue) R(robotics)
+      var hex = Message.bytesToHex(bytes);
+      expect(hex).to.deep.equal('4252');
     });
   });
 
@@ -132,6 +202,13 @@ describe('Message', function() {
       var str = 'BR';
       var hex = Message.asciiToHex(str);
       expect(hex).to.equal('4252');
+    });
+  });
+
+  describe('the formatLength function', function() {
+    it('should calculate the total byte length from the individual fields', function(){
+      Message.configure(config);
+      expect(Message.formatLength(Message.formats[0])).to.equal(50);
     });
   });
 

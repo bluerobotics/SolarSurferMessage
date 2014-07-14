@@ -1,5 +1,6 @@
 var fs = require('fs');
 var _ = require('lodash');
+var crc = require('crc');
 
 // declare static class
 function Message() {}
@@ -72,7 +73,6 @@ Message.configure = function(config) {
       throw new Message.FormatPayloadException('Format "' + String(i) + '" should have a payload');
 
     // parse fields
-    var sum = 0;
     for(var j = 0; j < format.payload.length; j++) {
       var field = format.payload[j];
       // expand share field
@@ -91,14 +91,12 @@ Message.configure = function(config) {
       if(Message.types[field.type] === undefined)
         throw new Message.FormatDataTypeException('Field type "' + field.type + '" not found');
 
-      // sum
-      sum += field.qty * Message.types[field.type].size;
-
       // re-set in case this was originally a string
       format.payload[j] = field;
     }
 
-    // make sure the length adds up to 50 bytes
+    // make sure the length is less than 340 for message to the RockBlock
+    var sum = this.formatLength(format);
     if(sum > 340)
       throw new Message.FormatLengthException('Format length "' + String(sum) + '" should be less than 340');
 
@@ -132,36 +130,49 @@ Message.decode = function(packet_hex_string) {
     throw new Message.DecodeLengthException('All packets must be at least 4 bytes long');
 
   // all packets must have a version at 0
-  var version = this.decodeBytes(packet[0], 'uint8_t');
+  var version = this.decodeValue(packet[0], 'uint8_t');
   if(version != this.version)
     throw new Message.DecodeVersionException('Unknown version "' + String(version) + '"');
 
   // all packets must have a format at 1
-  var format_index = this.decodeBytes(packet[1], 'uint8_t');
+  var format_index = this.decodeValue(packet[1], 'uint8_t');
   var format = this.formats[format_index];
   if(format === undefined)
     throw new Message.DecodeFormatException('Unknown format "' + String(format_index) + '"');
 
-  // all packets must have a checksum at 48 and 49
-  var checksum = this.decodeBytes(packet.substring(48, 50), 'uint16_t');
-  var actual_checksum = this.crc16(packet);
+  // check packet length matches format length
+  var expected_length = this.formatLength(format);
+  if(packet.length != expected_length)
+    throw new Message.DecodeLengthException('Packet length "' + String(packet.length) + '" should be "' + String(expected_length) + '"');
+
+  // all packets must have a checksum as the last two bytes
+  var checksum = this.bytesToHex(packet.slice(packet.length-2), 'uint16_t');
+  var actual_checksum = crc.crc16ccitt(this.bytesToHex(packet.slice(0, packet.length-2)));
   if(checksum != actual_checksum)
-    throw new Message.DecodeChecksumException('Checksum "' + String(checksum) + '" should be "' + String(actual_checksum) + '"');
+    throw new Message.DecodeChecksumException('Checksum "' + checksum + '" should be "' + actual_checksum + '"');
 
   // special image handling
   // if()
 
   // expand packet
   var message = {};
-  for(var i = 0; i < format.payload.length; i++) {
-    // tbd
-  }
+  // for(var i = 0; i < format.payload.length; i++) {
+  //   // tbd
+  // }
 
   // return decoded message
-  return {};
+  return message;
 };
 
-// encode message
+Message.decodeValue = function(input, type) {
+  if(Message.types[type] === undefined)
+    throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
+
+  // unsigned integer types
+  if(type.substr(0, 4) == 'uint')
+    return input;
+};
+
 Message.hexToBytes = function(hex) {
   // force conversion
   hex = hex.toString();
@@ -171,6 +182,14 @@ Message.hexToBytes = function(hex) {
     bytes.push(parseInt(hex.substr(i, 2), 16));
 
   return bytes;
+};
+
+Message.bytesToHex = function(bytes) {
+  var hex = '';
+  for (var i = 0; i < bytes.length; i ++)
+    hex += bytes[i].toString(16);
+
+  return hex;
 };
 
 Message.hexToAscii = function(hex) {
@@ -192,6 +211,15 @@ Message.asciiToHex = function(str) {
   }
 
   return arr.join('');
+};
+
+Message.formatLength = function(format) {
+    var sum = 0;
+
+    for(var i = 0; i < format.payload.length; i++)
+      sum += format.payload[i].qty * Message.types[format.payload[i].type].size;
+
+    return sum;
 };
 
 // node export
