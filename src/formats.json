@@ -165,7 +165,19 @@
           "type": "uint16_t"
         },
         {
-          "name": "telemetryRate",
+          "name": "telemetryCount",
+          "type": "uint16_t"
+        },
+        "checksum"
+      ]
+    },
+    "3": {
+      "name": "cmd/control",
+      "payload": [
+        "version",
+        "format",
+				{
+          "name": "telemetryPeriod",
           "type": "enum",
           "enum": {
             "0": "1",
@@ -182,21 +194,69 @@
             "11": "720",
             "12": "1440",
             "13": "2880"
-          }
         },
         {
-          "name": "telemetryCount",
+          "name": "forceMode",
+          "type": "enum"
+        },
+        {
+          "name": "forceHeading",
+          "type": "int16_t"
+        },
+        {
+          "name": "forceCurrentWaypointIndex",
           "type": "uint16_t"
         },
+        {
+          "name": "waypointID1",
+          "type": "uint16_t"
+        },
+        {
+          "name": "waypointLat1",
+          "type": "float"
+        },
+        {
+          "name": "waypointLon1",
+          "type": "float"
+        },
+        {
+          "name": "waypointID2",
+          "type": "uint16_t"
+        },
+        {
+          "name": "waypointLat2",
+          "type": "float"
+        },
+        {
+          "name": "waypointLon2",
+          "type": "float"
+        },
+        {
+          "name": "waypointID3",
+          "type": "uint16_t"
+        },
+        {
+          "name": "waypointLat3",
+          "type": "float"
+        },
+        {
+          "name": "waypointLon3",
+          "type": "float"
+        },
+        {
+          "name": "waypointID4",
+          "type": "uint16_t"
+        },
+        {
+          "name": "waypointLat4",
+          "type": "float"
+        },
+        {
+          "name": "waypointLon4",
+          "type": "float"
+        },
         "checksum"
-      ]
-    },
-    "3": {
-      "name": "cmd/control",
-      "payload": [
-        "version",
-        "format",
-        "checksum"
+        
       ]
     },
     "4": {
