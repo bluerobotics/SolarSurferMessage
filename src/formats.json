@@ -42,25 +42,25 @@
           "name": "test_enum",
           "type": "enum",
           "enum": {
-          	"0": "this",
-          	"1": "that"
+            "0": "this",
+            "1": "that"
           }
         },
         {
           "name": "test_bitmap",
           "type": "bitmap",
           "bitmap": {
-          	"0": "pos_name0",
-          	"1": "pos_name1"
+            "0": "pos_name0",
+            "1": "pos_name1"
           }
         },
         {
           "name": "test_convert",
           "type": "int8_t",
           "conversion": {
-          	"raw_units": "counts",
-          	"units": "V",
-          	"coeffs": [0, 1]
+            "raw_units": "counts",
+            "units": "V",
+            "coeffs": [0, 1]
           }
         },
         "checksum"
@@ -72,118 +72,118 @@
         "version",
         "format",
         {
-        	"name": "latitude",
-        	"type":	"float"
+          "name": "latitude",
+          "type": "float"
         },
         {
-        	"name":	"longitude",
-        	"type":	"float"
+          "name": "longitude",
+          "type": "float"
         },
-        {	
-        	"name":	"fix",
-        	"type":	"uint8_t"
+        {
+          "name": "fix",
+          "type": "uint8_t"
         },
-        {	
-        	"name":	"time",
-        	"type":	"uint32_t"
+        {
+          "name": "time",
+          "type": "uint32_t"
         },
-        {	
-        	"name":	"altitude",
-        	"type":	"int16_t"
+        {
+          "name": "altitude",
+          "type": "int16_t"
         },
-        {	
-        	"name":	"course",
-        	"type":	"int16_t",
-        	"conversion": {
-        		"raw_units": "centidegrees",
-        		"units": "degrees",
-        		"coeffs":	[0,100]
-        	}
-        },
-        {	
-        	"name":	"heading",
-        	"type":	"int16_t",
-        	"conversion": {
-        		"raw_units": "centidegrees",
-        		"units": "degrees",
-        		"coeffs":	[0,100]
-        	}
-        },
-        {	
-        	"name":	"p_solar",
-        	"type":	"int8_t"
-        },
-        {	
-        	"name":	"p_batt",
-        	"type":	"int8_t"
-        },
-        {	
-        	"name":	"p_left",
-        	"type":	"uint8_t"
-        },
-        {	
-        	"name":	"p_right",
-        	"type":	"uint8_t"
-        },
-        {	
-        	"name":	"rotations",
-        	"type":	"uint16_t"
-        },
-        {	
-        	"name":	"rpm_left",
-        	"type":	"uint8_t"
-        },
-        {	
-        	"name":	"rpm_right",
-        	"type":	"uint8_t"
-        },
-        {	
-        	"name":	"swellHeight",
-        	"type":	"uint16_t"
-        },
-        {	
-        	"name":	"commandCount",
-        	"type":	"uint16_t"
-        },
-        {	
-        	"name":	"tempAir",
-        	"type":	"uint8_t"
-        },
-        {	
-        	"name":	"tempWater",
-        	"type":	"uint8_t"
-        },
-        {	
-        	"name":	"pressure",
-        	"type":	"uint16_t"
-        },
-        {	
-        	"name":	"pH",
-        	"type":	"uint16_t"
-        },
-        {	
-        	"name":	"telemetryRate",
-        	"type":	"enum",
-        	"enum": {
-          	"0": "1",
-          	"1": "5",
-          	"2": "10",
-          	"3": "20",
-          	"4": "30",
-          	"5": "45",
-          	"6": "60",
-          	"7": "90",
-          	"8": "120",
-          	"9": "180",
-          	"10": "360",
-          	"11": "720",
-          	"12": "1440",
-          	"13": "2880"
+        {
+          "name": "course",
+          "type": "int16_t",
+          "conversion": {
+            "raw_units": "centidegrees",
+            "units": "degrees",
+            "coeffs":  [0,100]
           }
         },
-        {	
-        	"name":	"telemetryCount",
-        	"type":	"uint16_t"
+        {
+          "name": "heading",
+          "type": "int16_t",
+          "conversion": {
+            "raw_units": "centidegrees",
+            "units": "degrees",
+            "coeffs":  [0,100]
+          }
+        },
+        {
+          "name": "p_solar",
+          "type": "int8_t"
+        },
+        {
+          "name": "p_batt",
+          "type": "int8_t"
+        },
+        {
+          "name": "p_left",
+          "type": "uint8_t"
+        },
+        {
+          "name": "p_right",
+          "type": "uint8_t"
+        },
+        {
+          "name": "rotations",
+          "type": "uint16_t"
+        },
+        {
+          "name": "rpm_left",
+          "type": "uint8_t"
+        },
+        {
+          "name": "rpm_right",
+          "type": "uint8_t"
+        },
+        {
+          "name": "swellHeight",
+          "type": "uint16_t"
+        },
+        {
+          "name": "commandCount",
+          "type": "uint16_t"
+        },
+        {
+          "name": "tempAir",
+          "type": "uint8_t"
+        },
+        {
+          "name": "tempWater",
+          "type": "uint8_t"
+        },
+        {
+          "name": "pressure",
+          "type": "uint16_t"
+        },
+        {
+          "name": "pH",
+          "type": "uint16_t"
+        },
+        {
+          "name": "telemetryRate",
+          "type": "enum",
+          "enum": {
+            "0": "1",
+            "1": "5",
+            "2": "10",
+            "3": "20",
+            "4": "30",
+            "5": "45",
+            "6": "60",
+            "7": "90",
+            "8": "120",
+            "9": "180",
+            "10": "360",
+            "11": "720",
+            "12": "1440",
+            "13": "2880"
+          }
+        },
+        {
+          "name": "telemetryCount",
+          "type": "uint16_t"
         },
         "checksum"
       ]
@@ -193,6 +193,27 @@
       "payload": [
         "version",
         "format",
+        "checksum"
+      ]
+    },
+    "4": {
+      "name": "tlm/image",
+      "payload": [
+        "version",
+        "format",
+        {
+          "name": "num",
+          "type": "uint8_t"
+        },
+        {
+          "name": "total",
+          "type": "uint8_t"
+        },
+        {
+          "name": "data",
+          "type": "uint8_t",
+          "qty": 294
+        },
         "checksum"
       ]
     }
