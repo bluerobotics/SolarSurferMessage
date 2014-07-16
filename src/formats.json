@@ -2,15 +2,15 @@
   "version": "1",
   "shared": {
     "version": {
-      "name:": "version",
+      "name": "version",
       "type": "uint8_t"
     },
     "format": {
-      "name:": "format",
+      "name": "format",
       "type": "uint8_t"
     },
     "checksum": {
-      "name:": "checksum",
+      "name": "checksum",
       "type": "uint16_t"
     }
   },
