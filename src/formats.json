@@ -369,7 +369,8 @@
         {
           "name": "rcPower",
           "type": "int16_t"
-        }
+        },
+        "checksum"
       ]
     }
   }
