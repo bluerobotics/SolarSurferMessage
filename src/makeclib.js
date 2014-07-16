@@ -49,7 +49,8 @@ Object.keys(Message.formats).forEach(function(i) {
 	  	field = payload.name;
   	}
   	if ( payload.qty != null ) {
-  		array = '[' + payload.qty + ']';
+      if ( payload.qty > 1 )
+    		array = '[' + payload.qty + ']';
   	}
   	var comment = '';
   	if ( payload.conversion != null ) {
