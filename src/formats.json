@@ -2,15 +2,15 @@
   "version": "1",
   "shared": {
     "version": {
-      "name:": "version",
+      "name": "version",
       "type": "uint8_t"
     },
     "format": {
-      "name:": "format",
+      "name": "format",
       "type": "uint8_t"
     },
     "checksum": {
-      "name:": "checksum",
+      "name": "checksum",
       "type": "uint16_t"
     }
   },
@@ -277,6 +277,134 @@
           "name": "data",
           "type": "uint8_t",
           "qty": 294
+        },
+        "checksum"
+      ]
+    },
+    "5": {
+      "name": "tlm/diagnostic",
+      "payload": [
+        "version",
+        "format",
+        {
+          "name": "gpsTime",
+          "type": "uint32_t"
+        },
+        {
+          "name": "gpsLatitude",
+          "type": "float"
+        },
+        {
+          "name": "gpsLongitude",
+          "type": "float"
+        },
+        {
+          "name": "gpsAltitude",
+          "type": "float"
+        },
+        {
+          "name": "gpsGroundSpeed",
+          "type": "float"
+        },
+        {
+          "name": "gpsCourse",
+          "type": "float"
+        },
+        {
+          "name": "wpIndex",
+          "type": "uint16_t"
+        },
+        {
+          "name": "wpLatitude",
+          "type": "float"
+        },
+        {
+          "name": "wpLongitude",
+          "type": "float"
+        },
+        {
+          "name": "roll",
+          "type": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "float"
+        },
+        {
+          "name": "heading",
+          "type": "float"
+        },
+        {
+          "name": "distanceToWaypoint",
+          "type": "float"
+        },
+        {
+          "name": "desiredCourse",
+          "type": "float"
+        },
+        {
+          "name": "desiredPower",
+          "type": "float"
+        },
+        {
+          "name": "leftThruster",
+          "type": "uint16_t"
+        },
+        {
+          "name": "rightThruster",
+          "type": "uint16_t"
+        },
+        {
+          "name": "isManual",
+          "type": "uint8_t"
+        },
+        {
+          "name": "isOther",
+          "type": "uint8_t"
+        },
+        {
+          "name": "rcSteering",
+          "type": "int16_t"
+        },
+        {
+          "name": "rcPower",
+          "type": "int16_t"
+        },
+        {
+          "name": "voltageAPM",
+          "type": "float"
+        },
+        {
+          "name": "voltageSolar",
+          "type": "float"
+        },
+        {
+          "name": "voltageBattery",
+          "type": "float"
+        },
+        {
+          "name": "voltageThrusters",
+          "type": "float"
+        },
+        {
+          "name": "powerAPM",
+          "type": "float"
+        },
+        {
+          "name": "powerThrusters",
+          "type": "float"
+        },
+        {
+          "name": "powerSolar",
+          "type": "float"
+        },
+        {
+          "name": "powerCharge",
+          "type": "float"
+        },
+        {
+          "name": "powerLoad",
+          "type": "float"
         },
         "checksum"
       ]
