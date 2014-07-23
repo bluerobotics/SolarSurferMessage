@@ -370,6 +370,34 @@
           "name": "rcPower",
           "type": "int16_t"
         },
+        {
+          "name": "voltageSolar",
+          "type": "float"
+        },
+        {
+          "name": "voltageBattery",
+          "type": "float"
+        },
+        {
+          "name": "voltageThrusters",
+          "type": "float"
+        },
+        {
+          "name": "totalThrusterPower",
+          "type": "float"
+        },
+        {
+          "name": "solarPower",
+          "type": "float"
+        },
+        {
+          "name": "chargePower",
+          "type": "float"
+        },
+        {
+          "name": "loadPower",
+          "type": "float"
+        },
         "checksum"
       ]
     }
