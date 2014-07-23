@@ -371,6 +371,10 @@
           "type": "int16_t"
         },
         {
+          "name": "voltageAPM",
+          "type": "float"
+        },
+        {
           "name": "voltageSolar",
           "type": "float"
         },
@@ -383,19 +387,23 @@
           "type": "float"
         },
         {
-          "name": "totalThrusterPower",
+          "name": "powerAPM",
           "type": "float"
         },
         {
-          "name": "solarPower",
+          "name": "powerThrusters",
           "type": "float"
         },
         {
-          "name": "chargePower",
+          "name": "powerSolar",
           "type": "float"
         },
         {
-          "name": "loadPower",
+          "name": "powerCharge",
+          "type": "float"
+        },
+        {
+          "name": "powerLoad",
           "type": "float"
         },
         "checksum"
