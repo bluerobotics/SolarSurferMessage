@@ -6,7 +6,35 @@ Message definition and supporting libraries for the [SolarSurfer](http://bluerob
 
 The project defines the command and telemetry definitions for the SolarSurfer project. JavaScript and C libraries are included to ease encoding and decoding messages.
 
-## Data Types
+## Setup
+
+Get the code:
+
+```bash
+git clone https://github.com/bluerobotics/SolarSurferMessage.git
+cd SolarSurferMessage
+npm install
+```
+
+Run the tests:
+
+```bash
+npm test
+```
+
+## Message Formats
+
+Message formats are stored in the [src/formats.json](src/formats.json) file. Formats are defined by an unsigned integer and contain `name`, `payload` fields, and `multipacket` fields. The payload field contains the definition for an array of variables that makes up the comm format. Each variable definition is an object and must have a `name` and `type` defined. Variables of type `enum` and `bitmap` also must have a `map` defined. Maps for `enums` can have up to 256 values and maps for `bitmaps` can have up to 8 values.
+
+To reduce duplicate variable definitions across formats, variable definitions can be defined in the upper level `shared` object. These definitions can be reference by defining subsequent variable definitions to the shared object key (a string) instead of an object.
+
+Once message formats are defined, preview the results the info script. This will parse the formats file and verify that all message formats are valid.
+
+```bash
+npm run-script info
+```
+
+### Data Types
 
 The following data types are supported:
 
@@ -26,28 +54,12 @@ enum | 8 | the entire value is used in a lookup map
 bitmap | 8 | each bit is an isolated value
 char | 8 | 2 byte ascii value
 
-## Message Formats
-
-Message formats are stored in the [src/formats.json](src/formats.json) file. Formats are defined by a defined by a unsigned integer and contain `name` and `payload` fields. The payload field contains the definition for an array of variables that makes up the comm format. Each variable definition is an object and must have a `name` and `type` defined. Variables of type `enum` and `bitmap` also must have a `map` defined. Maps for `enums` can have up to 256 values and maps for `bitmaps` can have up to 8 values.
-
-To reduce duplicate variable definitions across formats, variable definitions can be defined in the upper level `shared` object. These definitions can be reference by defining subsequent variable definitions to the shared object key (a string) instead of an object.
-
-## Cross-Compiling C Library
-
-To make a compatible AVR message library, run:
-
-```bash
-npm run-script makeclib
-```
-
-The C files are now available in `output/`.
-
-## Library API
+## JavaScript API
 
 The JavaScript and C libraries have identical APIs.
 
-* `SolarSurferComm.encode(msg)` - returns a byte array of the supplied message
-* `SolarSurferComm.decode(byte_array)` - returns the message represented by the supplied byte_array
+* `Message.encode(msg)` - returns a byte array of the supplied message
+* `Message.decode(byte_array)` - returns the message represented by the supplied byte_array
 
 A typical application looks like this:
 
@@ -58,6 +70,16 @@ var msg = {
 }
 var byte_array = SolarSurferComm.encode(msg);
 ```
+
+## Cross-Compiling C Library
+
+This package can cross-compile the `formats.json` file into an AVR-compatible message library. This makes it easy to publish a message to the RockBlock modem on an Arduino-like platform.
+
+```bash
+npm run-script makeclib
+```
+
+The C files are now available in `output/`.
 
 ## Change History
 
