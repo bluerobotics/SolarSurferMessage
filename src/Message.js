@@ -68,6 +68,9 @@ Message.configure = function(config) {
     if(format.name === undefined)
       throw new Message.FormatNameException('Format "' + String(i) + '" should have a name');
 
+    if(format.multipacket !== true)
+      format.multipacket = false;
+
     // it should have a payload
     if(format.payload === undefined)
       throw new Message.FormatPayloadException('Format "' + String(i) + '" should have a payload');
@@ -101,7 +104,6 @@ Message.configure = function(config) {
       throw new Message.FormatLengthException('Format length "' + String(sum) + '" should be less than 340');
 
     // check required fields
-
     if(format.payload[0].name != 'version' || format.payload[1].type != 'uint8_t')
       throw new Message.FormatRequiredFieldException('Field "version" should be the first field in the format.');
     if(format.payload[1].name != 'format' || format.payload[1].type != 'uint8_t')

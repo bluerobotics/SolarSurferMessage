@@ -10,8 +10,7 @@ var filename = 'Messages.h';
 // init file contents
 var clib = '';
 
-// Add stuff at top
-
+// add stuff at top
 clib += '#ifndef MESSAGES_H630903\n';
 clib += '#define MESSAGES_H630903\n\n';
 clib += '/* This file was automatically generated. DO NOT EDIT! */\n\n';
@@ -68,6 +67,7 @@ Object.keys(Message.formats).forEach(function(i) {
   clib += '};\n';
 });
 
+// add stuff at bottom
 clib += '\n}\n\n';
 clib += '#endif';
 
@@ -80,5 +80,5 @@ fs.mkdir(dir, function(e){
   }
 });
 
-// write 
+// write completed file
 fs.writeFileSync(dir+filename, clib+'\n');

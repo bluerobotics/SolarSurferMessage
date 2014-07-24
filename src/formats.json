@@ -262,6 +262,7 @@
     },
     "4": {
       "name": "tlm/image",
+      "multipacket": true,
       "payload": [
         "version",
         "format",
