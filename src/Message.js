@@ -102,14 +102,14 @@ Message.configure = function(config) {
 
     // check required fields
 
-    /*if(format.payload[0].name != 'version' || format.payload[1].type != 'uint8_t')
+    if(format.payload[0].name != 'version' || format.payload[1].type != 'uint8_t')
       throw new Message.FormatRequiredFieldException('Field "version" should be the first field in the format.');
     if(format.payload[1].name != 'format' || format.payload[1].type != 'uint8_t')
       throw new Message.FormatRequiredFieldException('Field "format" should be the second field in the format.');
     var last_idx = format.payload.length - 1;
     if(format.payload[last_idx].name != 'checksum' || format.payload[last_idx].type != 'uint16_t')
       throw new Message.FormatRequiredFieldException('Field "checksum" should be the last field in the format.');
-*/
+
     // save format to class
     this.formats[i] = format;
   }, this);
