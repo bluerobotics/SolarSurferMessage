@@ -1,12 +1,12 @@
-# SolarSurferComm
+[![Build Status](https://travis-ci.org/bluerobotics/SolarSurferMessage.svg?branch=master)](https://travis-ci.org/bluerobotics/SolarSurferMessage)
+
+# SolarSurferMessage
 
 Message definition and supporting libraries for the [SolarSurfer](http://bluerobotics.com/) project.
 
 ## Overview
 
 The project defines the command and telemetry definitions for the SolarSurfer project. JavaScript and C libraries are included to ease encoding and decoding messages.
-
-Build status: [![Build Status](https://travis-ci.org/bluerobotics/SolarSurferMessage.svg?branch=master)](https://travis-ci.org/bluerobotics/SolarSurferMessage)
 
 ## Setup
 
