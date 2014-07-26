@@ -4,6 +4,7 @@
   "description": "The communication standard for the SolarSurfer project.",
   "scripts": {
     "test": "mocha -w --reporter spec",
+    "testonce": "mocha ---reporter spec",
     "makeclib": "node src/makeclib.js",
     "info": "node src/info.js"
   },
