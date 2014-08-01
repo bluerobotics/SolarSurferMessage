@@ -244,5 +244,9 @@ Message.formatLength = function(format) {
     return sum;
 };
 
+Message.payloadLength = function(payload) {
+    return Message.types[payload.type].size;
+}
+
 // node export
 module.exports = Message;

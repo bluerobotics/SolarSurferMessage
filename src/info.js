@@ -11,5 +11,14 @@ Object.keys(Message.formats).forEach(function(i) {
   var format = Message.formats[i];
 
   console.log('[' + i + '] ' + format.name + ', ' + String(Message.formatLength(format)) + ' bytes, multi-packet:', format.multipacket);
+
+  var position = 0;
+
+  Object.keys(format.payload).forEach(function(j) {
+  	var payload = format.payload[j];
+
+  	console.log('\t' + position + '-' + (position+Message.payloadLength(payload)-1) + ':\t' + payload.name + ' (' + payload.type + ')');
+  	position += Message.payloadLength(payload);
+  });
 });
 // for(var i = 0; i < Message.formats)
