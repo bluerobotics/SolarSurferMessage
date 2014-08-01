@@ -92,32 +92,45 @@
         },
         {
           "name": "altitude",
-          "type": "int16_t"
+          "type": "int8_t",
+          "comment": "half-meters MSL"
         },
         {
           "name": "course",
-          "type": "int16_t",
+          "type": "int8_t",
+          "comment": "180/128ths of a degree from true north",
           "conversion": {
-            "raw_units": "centidegrees",
+            "raw_units": "180/128 degrees",
             "units": "degrees",
-            "coeffs":  [0,100]
+            "coeffs":  [1.40625,0]
           }
         },
         {
           "name": "heading",
-          "type": "int16_t",
+          "type": "int8_t",
+          "comment": "180/128ths of a degree from true north",
           "conversion": {
-            "raw_units": "centidegrees",
+            "raw_units": "180/128 degrees",
             "units": "degrees",
-            "coeffs":  [0,100]
+            "coeffs":  [1.40625,0]
           }
+        },
+        {
+          "name": "v_load",
+          "type": "uint16_t",
+          "comment": "millivolts"
+        },
+        {
+          "name": "v_solar",
+          "type": "uint16_t",
+          "comment": "millivolts"
         },
         {
           "name": "p_solar",
           "type": "int8_t"
         },
         {
-          "name": "p_batt",
+          "name": "p_load",
           "type": "int8_t"
         },
         {
@@ -140,28 +153,66 @@
           "name": "rpm_right",
           "type": "uint8_t"
         },
-        {
-          "name": "swellHeight",
-          "type": "uint16_t"
+        { 
+          "name": "rollPitchRange",
+          "type": "uint8_t",
+          "comment": "average tilt deviation in degrees over last 10 minutes"
+        },
+        { 
+          "name": "swellPeriod",
+          "type": "uint8_t",
+          "comment": "seconds"
         },
         {
-          "name": "commandCount",
-          "type": "uint16_t"
+          "name": "swellHeight",
+          "type": "uint8_t",
+          "comment": "quarter-meters"
         },
         {
           "name": "tempAir",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "comment": "quarter-degrees Celcius offset by -20C, range=(-20C,43C)"
         },
         {
           "name": "tempWater",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "comment": "sixth-degrees Celcius, range=(0C,42C)"
         },
         {
           "name": "pressure",
-          "type": "uint16_t"
+          "type": "int8_t",
+          "comment": "hectoPascals offset by 1013 hectoPascals (ISO standard)"
         },
         {
           "name": "pH",
+          "type": "int8_t",
+          "comment": "centi-pH-units from 7.0, range=(4.45,9.55)"
+        },
+        {
+          "name": "salinity",
+          "type": "int8_t",
+          "comment": "unknown units"
+        },
+        {
+          "name": "windSpeed",
+          "type": "uint16_t",
+          "comment": "cm/s"
+        },
+        {
+          "name": "windDirection",
+          "type": "int8_t",
+          "comment": "180/128ths of a degree from true north"
+        },
+        { "name": "status",
+          "type": "uint16_t",
+          "comment": ""
+        },
+        {
+          "name": "currentWaypointIndex",
+          "type": "uint8_t"
+        },
+        {
+          "name": "commandCount",
           "type": "uint16_t"
         },
         {
@@ -202,15 +253,24 @@
         },
         {
           "name": "forceHeading",
-          "type": "int16_t"
+          "type": "int8_t",
+          "comment": "180/128ths of a degree from true north"
+        },
+        { "name": "forceGoalVoltage",
+          "type": "uint16_t",
+          "comment": "millivolts"
         },
         {
           "name": "forceCurrentWaypointIndex",
-          "type": "uint16_t"
+          "type": "uint8_t"
         },
         {
           "name": "waypointID1",
-          "type": "uint16_t"
+          "type": "uint8_t"
+        },
+        { "name": "waypointRadius1",
+          "type": "uint8_t",
+          "comment": "meters"
         },
         {
           "name": "waypointLat1",
@@ -222,7 +282,11 @@
         },
         {
           "name": "waypointID2",
-          "type": "uint16_t"
+          "type": "uint8_t"
+        },
+        { "name": "waypointRadius2",
+          "type": "uint8_t",
+          "comment": "meters"
         },
         {
           "name": "waypointLat2",
@@ -234,7 +298,11 @@
         },
         {
           "name": "waypointID3",
-          "type": "uint16_t"
+          "type": "uint8_t"
+        },
+        { "name": "waypointRadius3",
+          "type": "uint8_t",
+          "comment": "meters"
         },
         {
           "name": "waypointLat3",
@@ -246,7 +314,11 @@
         },
         {
           "name": "waypointID4",
-          "type": "uint16_t"
+          "type": "uint8_t"
+        },
+        { "name": "waypointRadius4",
+          "type": "uint8_t",
+          "comment": "meters"
         },
         {
           "name": "waypointLat4",
@@ -313,7 +385,11 @@
         },
         {
           "name": "wpIndex",
-          "type": "uint16_t"
+          "type": "uint8_t"
+        },
+        {
+          "name": "waypointRadius",
+          "type": "uint8_t"
         },
         {
           "name": "wpLatitude",

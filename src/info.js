@@ -17,7 +17,14 @@ Object.keys(Message.formats).forEach(function(i) {
   Object.keys(format.payload).forEach(function(j) {
   	var payload = format.payload[j];
 
-  	console.log('\t' + position + '-' + (position+Message.payloadLength(payload)-1) + ':\t' + payload.name + ' (' + payload.type + ')');
+  	var comment;
+  	if (typeof payload.comment == 'undefined') {
+  		comment = ''
+  	} else {
+  		comment = '[' + payload.comment + ']';
+  	}
+
+  	console.log('\t' + position + '-' + (position+Message.payloadLength(payload)-1) + ':\t' + payload.name + ' (' + payload.type + ') ' + comment);
   	position += Message.payloadLength(payload);
   });
 });
