@@ -37,8 +37,9 @@ var custom_errors = [
   'DecodeFormatException',
   'DecodeChecksumException',
   'DecodeValueException'];
+var custom_error_handler = function(message) { this.message = message; };
 for(var i = 0; i < custom_errors.length; i++) {
-  Message[custom_errors[i]] = function(message) { this.message = message; };
+  Message[custom_errors[i]] = custom_error_handler;
   Message[custom_errors[i]].prototype = new Error();
 }
 
@@ -49,7 +50,7 @@ for(var i = 0; i < custom_errors.length; i++) {
 
 // custom decode exception
 Message.loadConfigFile = function(file) {
-  if(file === undefined) file = 'src/formats.json';
+  if(file === undefined) file = __dirname + '/formats.json';
   var config = fs.readFileSync(file, 'utf8');
   this.configure(JSON.parse(config));
 };

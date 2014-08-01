@@ -2,6 +2,7 @@
   "name": "SolarSurferMessage",
   "version": "0.0.0",
   "description": "The communication standard for the SolarSurfer project.",
+  "main": "src/Message.js",
   "scripts": {
     "test": "mocha -w --reporter spec",
     "testonce": "mocha --reporter spec",
