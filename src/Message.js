@@ -1,6 +1,7 @@
 var fs = require('fs');
 var _ = require('lodash');
 var crc = require('crc');
+require('extend-error');
 
 // declare static class
 function Message() {}
@@ -37,16 +38,9 @@ var custom_errors = [
   'DecodeFormatException',
   'DecodeChecksumException',
   'DecodeValueException'];
-var custom_error_handler = function(message) { this.message = message; };
 for(var i = 0; i < custom_errors.length; i++) {
-  Message[custom_errors[i]] = custom_error_handler;
-  Message[custom_errors[i]].prototype = new Error();
+  Message[custom_errors[i]] = Error.extend(custom_errors[i]);
 }
-
-// custom decode exception
-// Message.DecodeException = function(msg) {
-//   this.msg = msg;
-// };
 
 // custom decode exception
 Message.loadConfigFile = function(file) {

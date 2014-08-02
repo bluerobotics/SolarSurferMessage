@@ -218,4 +218,11 @@ describe('Message', function() {
     });
   });
 
+  describe('regressions', function() {
+    it('should decode 01039a99ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100ec58', function(){
+      var data = '01039a99ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100ec58';
+      Message.decode(data);
+    });
+  });
+
 });
