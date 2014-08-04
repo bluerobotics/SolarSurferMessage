@@ -163,12 +163,26 @@ Message.decode = function(hex) {
       var raw = packet.slice(pos, pos+data_type_size);
       pos += data_type_size;
 
+      // decode (with map, if applicable)
+      var decoded;
       if(field.type == 'enum')
-        message[field.name].push(this.decodeValue(raw, field.type, field.enum));
+        decoded = this.decodeValue(raw, field.type, field.enum);
       if(field.type == 'bitmap')
-        message[field.name].push(this.decodeValue(raw, field.type, field.bitmap));
+        decoded = this.decodeValue(raw, field.type, field.bitmap);
       else
-        message[field.name].push(this.decodeValue(raw, field.type));
+        decoded = this.decodeValue(raw, field.type);
+
+      // apply conversion if applicable
+      if(field.conversion !== undefined && field.conversion.coeffs !== undefined) {
+        var x = decoded, y = 0;
+        for(var k = 0; k < field.conversion.coeffs.length; k++) {
+          y += Math.pow(x, k) * field.conversion.coeffs[k];
+        }
+        decoded = y;
+      }
+
+      // save value
+      message[field.name].push(decoded);
     }
 
     // flatten if qty is one
@@ -216,7 +230,7 @@ Message.decodeValue = function(buffer, type, map) {
     return obj;
   }
 
-  // other types
+  // string types
   else if(type == 'char') return buffer.toString('ascii');
   else if(type == 'hex') return buffer.toString('hex');
 
@@ -252,7 +266,7 @@ Message.encodeValue = function(value, type) {
 
   // map types
 
-  // other types
+  // string types
   else if(type == 'char') buffer = new Buffer(value, 'ascii');
   else if(type == 'hex') buffer = new Buffer(value, 'hex');
 

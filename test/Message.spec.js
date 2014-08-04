@@ -40,6 +40,21 @@ describe('Message', function() {
             },
             "checksum"
           ]
+        },
+        "1": {
+          "name": "test/conversion",
+          "payload": [
+            "version",
+            "format",
+            {
+              "name": "num",
+              "type": "uint8_t",
+              "conversion": {
+                "coeffs": [1, 2.2]
+              }
+            },
+            "checksum"
+          ]
         }
       }
     };
@@ -164,6 +179,11 @@ describe('Message', function() {
         message: 'The SolarSurfer is going to Hawaii! Hopefully.',
         checksum: '85f7'
       });
+    });
+
+    it('should apply a conversion if supplied for number types', function(){
+      var message = Message.decode('010101d8bc');
+      expect(message.num).to.equal(3.2);
     });
   });
 
