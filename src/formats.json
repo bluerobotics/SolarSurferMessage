@@ -11,7 +11,8 @@
     },
     "checksum": {
       "name": "checksum",
-      "type": "uint16_t"
+      "type": "hex",
+      "qty": 2
     }
   },
   "formats": {

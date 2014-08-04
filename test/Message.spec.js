@@ -23,7 +23,8 @@ describe('Message', function() {
         },
         "checksum": {
           "name": "checksum",
-          "type": "uint16_t"
+          "type": "hex",
+          "qty": 2
         }
       },
       "formats": {
@@ -161,7 +162,7 @@ describe('Message', function() {
         version: 1,
         format: 0,
         message: 'The SolarSurfer is going to Hawaii! Hopefully.',
-        checksum: 34295
+        checksum: '85f7'
       });
     });
   });
@@ -174,55 +175,44 @@ describe('Message', function() {
     });
 
     it('should convert a uint8_t to a number', function(){
-      var output = Message.decodeValue('0a', 'uint8_t');
-      expect(output).to.equal(10);
+      var output = Message.decodeValue(new Buffer('01', 'hex'), 'uint8_t');
+      expect(output).to.equal(1);
     });
 
     it('should convert a uint16_t to a number', function(){
-      var output = Message.decodeValue('0a00', 'uint8_t');
-      expect(output).to.equal(2560);
+      var output = Message.decodeValue(new Buffer('0001', 'hex'), 'uint16_t');
+      expect(output).to.equal(256);
     });
 
     it('should convert a uint32_t to a number', function(){
-      var output = Message.decodeValue('0a0000', 'uint8_t');
-      expect(output).to.equal(655360);
+      var output = Message.decodeValue(new Buffer('00000001', 'hex'), 'uint32_t');
+      expect(output).to.equal(16777216);
     });
 
-    it('should convert a uint64_t to a number', function(){
-      var output = Message.decodeValue('0a000000', 'uint8_t');
-      expect(output).to.equal(167772160);
-    });
-  });
+    it('should convert a int8_t to a number', function(){
+      var output = Message.decodeValue(new Buffer('01', 'hex'), 'int8_t');
+      expect(output).to.equal(1);
 
-  describe('the hexToBytes function', function() {
-    it('should convert a string of hex characters to a byte array', function(){
-      var hex = '4252'; // B(lue) R(robotics)
-      var bytes = Message.hexToBytes(hex);
-      expect(bytes).to.deep.equal([66, 82]);
-    });
-  });
+      output = Message.decodeValue(new Buffer('ff', 'hex'), 'int8_t');
+      expect(output).to.equal(-1);
 
-  describe('the bytesToHex function', function() {
-    it('should convert a byte array to a string of hex characters', function(){
-      var bytes = [66, 82]; // B(lue) R(robotics)
-      var hex = Message.bytesToHex(bytes);
-      expect(hex).to.deep.equal('4252');
+      output = Message.decodeValue(new Buffer('80', 'hex'), 'int8_t');
+      expect(output).to.equal(-Math.pow(2, 8-1));
     });
-  });
 
-  describe('the hexToAscii function', function() {
-    it('should convert a string of hex characters to an ascii string', function(){
-      var hex = '4252'; // B(lue) R(robotics)
-      var str = Message.hexToAscii(hex);
-      expect(str).to.equal('BR');
+    it('should convert a int16_t to a number', function(){
+      var output = Message.decodeValue(new Buffer('0080', 'hex'), 'int16_t');
+      expect(output).to.equal(-Math.pow(2, 16-1));
     });
-  });
 
-  describe('the asciiToHex function', function() {
-    it('should convert an ascii string to a string of hex characters', function(){
-      var str = 'BR';
-      var hex = Message.asciiToHex(str);
-      expect(hex).to.equal('4252');
+    it('should convert a int32_t to a number', function(){
+      var output = Message.decodeValue(new Buffer('00000080', 'hex'), 'int32_t');
+      expect(output).to.equal(-Math.pow(2, 32-1));
+    });
+
+    it('should pass through a hex string', function(){
+      var output = Message.decodeValue(new Buffer('ab', 'hex'), 'hex');
+      expect(output).to.equal('ab');
     });
   });
 
@@ -235,7 +225,7 @@ describe('Message', function() {
 
   describe('the checksum function', function(){
     it('should produce correct crc16ccitt checksums', function(){
-      var checksum = Message.checksum('9a');
+      var checksum = Message.checksum(new Buffer('9a', 'hex'));
       expect(checksum).to.equal('c303');
     });
   });
@@ -245,12 +235,12 @@ describe('Message', function() {
       Message.loadConfigFile();
     });
 
-    it('should decode 01039a99ecc29a99054201e803000002645a29054c0500000000000000000000000000000000000000000001000001009a50', function(){
-      var data = '01039a99ecc29a99054201e803000002645a29054c0500000000000000000000000000000000000000000001000001009a50';
-      // this should not throw an error
-      Message.decode(data);
-      console.log(Message.decode(data));
-    });
+    // it('should decode 01039a99ecc29a99054201e803000002645a29054c0500000000000000000000000000000000000000000001000001009a50', function(){
+    //   var data = '01039a99ecc29a99054201e803000002645a29054c0500000000000000000000000000000000000000000001000001009a50';
+    //   // this should not throw an error
+    //   Message.decode(data);
+    //   console.log(Message.decode(data));
+    // });
   });
 
 });
