@@ -197,6 +197,10 @@ Message.decodeValue = function(buffer, type, map) {
   else if(type == 'int16_t') return buffer.readInt16LE(0);
   else if(type == 'int32_t') return buffer.readInt32LE(0);
 
+  // floating point types
+  else if(type == 'float') return buffer.readFloatLE(0);
+  else if(type == 'double') return buffer.readDoubleLE(0);
+
   // map types
   else if(type == 'enum') {
     var index = buffer.readUInt8(0);
@@ -221,20 +225,41 @@ Message.decodeValue = function(buffer, type, map) {
 };
 
 Message.encodeValue = function(value, type) {
+  var buffer;
+
   // unsigned integer types
-  if(type == 'uint8_t') return buffer.readUInt8(0);
+  if(type == 'uint8_t') {
+    buffer = new Buffer(1);
+    buffer.writeUInt8(value, 0);
+  }
   // else if(type == 'uint16_t') return buffer.readUInt16LE(0);
   // else if(type == 'uint32_t') return buffer.readUInt32LE(0);
+
+  // signed integer types
   // else if(type == 'int8_t') return buffer.readInt8(0);
   // else if(type == 'int16_t') return buffer.readInt16LE(0);
   // else if(type == 'int32_t') return buffer.readInt32LE(0);
 
+  // floating point types
+  else if(type == 'float') {
+    buffer = new Buffer(4);
+    buffer.writeFloatLE(value, 0);
+  }
+  else if(type == 'double') {
+    buffer = new Buffer(8);
+    buffer.writeDoubleLE(value, 0);
+  }
+
+  // map types
+
   // other types
-  else if(type == 'char') return new Buffer(value, 'ascii');
-  else if(type == 'hex') return new Buffer(value, 'hex');
+  else if(type == 'char') buffer = new Buffer(value, 'ascii');
+  else if(type == 'hex') buffer = new Buffer(value, 'hex');
 
   // error for unknown
   else throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
+
+  return buffer;
 };
 
 Message.formatLength = function(format) {

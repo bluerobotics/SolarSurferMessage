@@ -174,22 +174,22 @@ describe('Message', function() {
       }).to.throw(Message.DecodeValueException);
     });
 
-    it('should convert a uint8_t to a number', function(){
+    it('should decode a uint8_t', function(){
       var output = Message.decodeValue(new Buffer('01', 'hex'), 'uint8_t');
       expect(output).to.equal(1);
     });
 
-    it('should convert a uint16_t to a number', function(){
+    it('should decode a uint16_t', function(){
       var output = Message.decodeValue(new Buffer('0001', 'hex'), 'uint16_t');
       expect(output).to.equal(256);
     });
 
-    it('should convert a uint32_t to a number', function(){
+    it('should decode a uint32_t', function(){
       var output = Message.decodeValue(new Buffer('00000001', 'hex'), 'uint32_t');
       expect(output).to.equal(16777216);
     });
 
-    it('should convert a int8_t to a number', function(){
+    it('should decode a int8_t', function(){
       var output = Message.decodeValue(new Buffer('01', 'hex'), 'int8_t');
       expect(output).to.equal(1);
 
@@ -200,17 +200,27 @@ describe('Message', function() {
       expect(output).to.equal(-Math.pow(2, 8-1));
     });
 
-    it('should convert a int16_t to a number', function(){
+    it('should decode a int16_t', function(){
       var output = Message.decodeValue(new Buffer('0080', 'hex'), 'int16_t');
       expect(output).to.equal(-Math.pow(2, 16-1));
     });
 
-    it('should convert a int32_t to a number', function(){
+    it('should decode a int32_t', function(){
       var output = Message.decodeValue(new Buffer('00000080', 'hex'), 'int32_t');
       expect(output).to.equal(-Math.pow(2, 32-1));
     });
 
-    it('should convert an enum to a value', function(){
+    it('should decode a float', function(){
+      var output = Message.decodeValue(new Buffer('c3f54840', 'hex'), 'float');
+      expect(Math.abs(3.14-output)).to.be.below(0.001);
+    });
+
+    it('should decode a double', function(){
+      var output = Message.decodeValue(new Buffer('1f85eb51b81e0940', 'hex'), 'double');
+      expect(Math.abs(3.14-output)).to.be.below(0.001);
+    });
+
+    it('should decode an enum', function(){
       var map = {
         "0": "this",
         "1": 42
@@ -219,7 +229,7 @@ describe('Message', function() {
       expect(output).to.equal(42);
     });
 
-    it('should convert a bitmap to an object', function(){
+    it('should decode a bitmap', function(){
       var map = {
         "0": "pos_name0",
         "1": "pos_name1",
@@ -245,6 +255,16 @@ describe('Message', function() {
   });
 
   describe('the encodeValue function', function() {
+    it('should encode a float', function(){
+      var buffer = Message.encodeValue(3.14, 'float');
+      expect(buffer.toString('hex')).to.equal('c3f54840');
+    });
+
+    it('should encode a double', function(){
+      var buffer = Message.encodeValue(3.14, 'double');
+      expect(buffer.toString('hex')).to.equal('1f85eb51b81e0940');
+    });
+
     it('should encode a char string', function(){
       var buffer = Message.encodeValue('hello', 'char');
       expect(buffer.toString('hex')).to.equal('68656c6c6f');
@@ -275,8 +295,8 @@ describe('Message', function() {
       Message.loadConfigFile();
     });
 
-    // it('should decode 01039a99ecc29a99054201e803000002645a29054c0500000000000000000000000000000000000000000001000001009a50', function(){
-    //   var data = '01039a99ecc29a99054201e803000002645a29054c0500000000000000000000000000000000000000000001000001009a50';
+    // it('should decode 01030299ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100c516', function(){
+    //   var data = '01030299ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100c516';
     //   // this should not throw an error
     //   Message.decode(data);
     //   console.log(Message.decode(data));

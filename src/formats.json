@@ -62,8 +62,8 @@
           "name": "test_convert",
           "type": "int8_t",
           "conversion": {
-            "raw_units": "counts",
-            "units": "V",
+            "encoded_units": "counts",
+            "decoded_units": "V",
             "coeffs": [0, 1]
           }
         },
@@ -101,8 +101,8 @@
           "type": "int8_t",
           "comment": "180/128ths of a degree from true north",
           "conversion": {
-            "raw_units": "180/128 degrees",
-            "units": "degrees",
+            "encoded_units": "180/128 degrees",
+            "decoded_units": "degrees",
             "coeffs":  [1.40625,0]
           }
         },
@@ -111,8 +111,8 @@
           "type": "int8_t",
           "comment": "180/128ths of a degree from true north",
           "conversion": {
-            "raw_units": "180/128 degrees",
-            "units": "degrees",
+            "encoded_units": "180/128 degrees",
+            "decoded_units": "degrees",
             "coeffs":  [1.40625,0]
           }
         },
