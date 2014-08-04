@@ -1,7 +1,7 @@
 // import
 var chai = require('chai');
 var expect = chai.expect;
-var Message = require('src/Message.js');
+var Message = require('../src/Message.js');
 
 // common vars
 // var config;
@@ -210,9 +210,49 @@ describe('Message', function() {
       expect(output).to.equal(-Math.pow(2, 32-1));
     });
 
+    it('should convert an enum to a value', function(){
+      var map = {
+        "0": "this",
+        "1": 42
+      };
+      var output = Message.decodeValue(new Buffer('01', 'hex'), 'enum', map);
+      expect(output).to.equal(42);
+    });
+
+    it('should convert a bitmap to an object', function(){
+      var map = {
+        "0": "pos_name0",
+        "1": "pos_name1",
+        "2": "pos_name2"
+      };
+      var output = Message.decodeValue(new Buffer('06', 'hex'), 'bitmap', map);
+      expect(output).to.deep.equal({
+        pos_name0: false,
+        pos_name1: true,
+        pos_name2: true
+      });
+    });
+
+    it('should convert a char to an ascii character', function(){
+      var output = Message.decodeValue(new Buffer('68', 'hex'), 'char');
+      expect(output).to.equal('h');
+    });
+
     it('should pass through a hex string', function(){
       var output = Message.decodeValue(new Buffer('ab', 'hex'), 'hex');
       expect(output).to.equal('ab');
+    });
+  });
+
+  describe('the encodeValue function', function() {
+    it('should encode a char string', function(){
+      var buffer = Message.encodeValue('hello', 'char');
+      expect(buffer.toString('hex')).to.equal('68656c6c6f');
+    });
+
+    it('should pass through a hex string', function(){
+      var buffer = Message.encodeValue(new Buffer('ab', 'hex'), 'hex');
+      expect(buffer.toString('hex')).to.equal('ab');
     });
   });
 

@@ -1,7 +1,9 @@
 var fs = require('fs');
 var _ = require('lodash');
-var crc = require('crc');
+var crc = require('crc'); // https://github.com/alexgorbatchev/node-crc
 require('extend-error');
+// Node Buffer lib: http://nodejs.org/docs/v0.6.0/api/buffers.html
+// Helpful CRC checker: http://www.lammertbies.nl/comm/info/crc-calculation.html
 
 // declare static class
 function Message() {}
@@ -160,7 +162,13 @@ Message.decode = function(hex) {
     for(var j = 0; j < field.qty; j++) {
       var raw = packet.slice(pos, pos+data_type_size);
       pos += data_type_size;
-      message[field.name].push(this.decodeValue(raw, field.type));
+
+      if(field.type == 'enum')
+        message[field.name].push(this.decodeValue(raw, field.type, field.enum));
+      if(field.type == 'bitmap')
+        message[field.name].push(this.decodeValue(raw, field.type, field.bitmap));
+      else
+        message[field.name].push(this.decodeValue(raw, field.type));
     }
 
     // flatten if qty is one
@@ -178,16 +186,54 @@ Message.decode = function(hex) {
   return message;
 };
 
-Message.decodeValue = function(buffer, type) {
+Message.decodeValue = function(buffer, type, map) {
   // unsigned integer types
   if(type == 'uint8_t') return buffer.readUInt8(0);
   else if(type == 'uint16_t') return buffer.readUInt16LE(0);
   else if(type == 'uint32_t') return buffer.readUInt32LE(0);
+
+  // signed integer types
   else if(type == 'int8_t') return buffer.readInt8(0);
   else if(type == 'int16_t') return buffer.readInt16LE(0);
   else if(type == 'int32_t') return buffer.readInt32LE(0);
+
+  // map types
+  else if(type == 'enum') {
+    var index = buffer.readUInt8(0);
+    if(map[index] === undefined) throw new Message.DecodeValueException('Unpopulated enum index "' + String(index) + '"');
+    else return map[index];
+  }
+  else if(type == 'bitmap') {
+    var value = buffer.readUInt8(0);
+    var keys = Object.keys(map);
+    var obj = {};
+    for(var i = 0; i < keys.length; i++)
+      obj[map[keys[i]]] = !!(value & Math.pow(2, parseInt(keys[i])));
+    return obj;
+  }
+
+  // other types
   else if(type == 'char') return buffer.toString('ascii');
   else if(type == 'hex') return buffer.toString('hex');
+
+  // error for unknown
+  else throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
+};
+
+Message.encodeValue = function(value, type) {
+  // unsigned integer types
+  if(type == 'uint8_t') return buffer.readUInt8(0);
+  // else if(type == 'uint16_t') return buffer.readUInt16LE(0);
+  // else if(type == 'uint32_t') return buffer.readUInt32LE(0);
+  // else if(type == 'int8_t') return buffer.readInt8(0);
+  // else if(type == 'int16_t') return buffer.readInt16LE(0);
+  // else if(type == 'int32_t') return buffer.readInt32LE(0);
+
+  // other types
+  else if(type == 'char') return new Buffer(value, 'ascii');
+  else if(type == 'hex') return new Buffer(value, 'hex');
+
+  // error for unknown
   else throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
 };
 
