@@ -37,7 +37,8 @@ var custom_errors = [
   'DecodeVersionException',
   'DecodeFormatException',
   'DecodeChecksumException',
-  'DecodeValueException'];
+  'DecodeValueException',
+  'DecodeDataTypeException'];
 for(var i = 0; i < custom_errors.length; i++) {
   Message[custom_errors[i]] = Error.extend(custom_errors[i]);
 }
@@ -144,8 +145,8 @@ Message.decode = function(packet_hex_string) {
     throw new Message.DecodeLengthException('Packet length "' + String(packet.length) + '" should be "' + String(expected_length) + '"');
 
   // all packets must have a checksum as the last two bytes
-  var checksum = this.bytesToHex(packet.slice(packet.length-2), 'uint16_t');
-  var actual_checksum = crc.crc16ccitt(this.bytesToHex(packet.slice(0, packet.length-2)));
+  var checksum = this.bytesToHex(packet.slice(packet.length-2));
+  var actual_checksum = Message.checksum(packet.slice(0, packet.length-2));
   if(checksum != actual_checksum)
     throw new Message.DecodeChecksumException('Checksum "' + checksum + '" should be "' + actual_checksum + '"');
 
@@ -178,15 +179,17 @@ Message.decode = function(packet_hex_string) {
   return message;
 };
 
-Message.decodeValue = function(input, type) {
+Message.decodeValue = function(hex, type) {
   if(Message.types[type] === undefined)
     throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
 
   // unsigned integer types
   if(type.substr(0, 4) == 'uint')
-    return input;
+    return parseInt(hex, 16);
   else if(type == 'char')
-    return this.hexToAscii(input);
+    return this.hexToAscii(hex);
+  else
+    throw new Message.DecodeDataTypeException('Field type "' + type + '" not decode-able');
 };
 
 Message.hexToBytes = function(hex) {
@@ -230,17 +233,24 @@ Message.asciiToHex = function(str) {
 };
 
 Message.formatLength = function(format) {
-    var sum = 0;
+  var sum = 0;
 
-    for(var i = 0; i < format.payload.length; i++)
-      sum += format.payload[i].qty * Message.types[format.payload[i].type].size;
+  for(var i = 0; i < format.payload.length; i++)
+    sum += format.payload[i].qty * Message.types[format.payload[i].type].size;
 
-    return sum;
+  return sum;
 };
 
 Message.payloadLength = function(payload) {
-    return Message.types[payload.type].size;
-}
+  return Message.types[payload.type].size;
+};
+
+Message.checksum = function(hexOrBytes) {
+  if(typeof hexOrBytes == 'string')
+    hexOrBytes = Message.hexToBytes(hexOrBytes);
+
+  return crc.crc16ccitt(hexOrBytes);
+};
 
 // node export
 module.exports = Message;

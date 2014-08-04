@@ -115,7 +115,7 @@ describe('Message', function() {
     var packet;
 
     beforeEach(function(){
-      packet = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792e8a40';
+      packet = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792e85f7';
 
       Message.configure(config);
     });
@@ -158,10 +158,10 @@ describe('Message', function() {
     it('should not error for a valid packet', function(){
       var message = Message.decode(packet);
       expect(message).to.deep.equal({
-        version: '1',
-        format: '0',
+        version: 1,
+        format: 0,
         message: 'The SolarSurfer is going to Hawaii! Hopefully.',
-        checksum: '8a40'
+        checksum: 34295
       });
     });
   });
@@ -174,8 +174,23 @@ describe('Message', function() {
     });
 
     it('should convert a uint8_t to a number', function(){
-      var output = Message.decodeValue(10, 'uint8_t');
+      var output = Message.decodeValue('0a', 'uint8_t');
       expect(output).to.equal(10);
+    });
+
+    it('should convert a uint16_t to a number', function(){
+      var output = Message.decodeValue('0a00', 'uint8_t');
+      expect(output).to.equal(2560);
+    });
+
+    it('should convert a uint32_t to a number', function(){
+      var output = Message.decodeValue('0a0000', 'uint8_t');
+      expect(output).to.equal(655360);
+    });
+
+    it('should convert a uint64_t to a number', function(){
+      var output = Message.decodeValue('0a000000', 'uint8_t');
+      expect(output).to.equal(167772160);
     });
   });
 
@@ -218,10 +233,23 @@ describe('Message', function() {
     });
   });
 
+  describe('the checksum function', function(){
+    it('should produce correct crc16ccitt checksums', function(){
+      var checksum = Message.checksum('9a');
+      expect(checksum).to.equal('c303');
+    });
+  });
+
   describe('regressions', function() {
-    it('should decode 01039a99ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100ec58', function(){
-      var data = '01039a99ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100ec58';
+    beforeEach(function(){
+      Message.loadConfigFile();
+    });
+
+    it('should decode 01039a99ecc29a99054201e803000002645a29054c0500000000000000000000000000000000000000000001000001009a50', function(){
+      var data = '01039a99ecc29a99054201e803000002645a29054c0500000000000000000000000000000000000000000001000001009a50';
+      // this should not throw an error
       Message.decode(data);
+      console.log(Message.decode(data));
     });
   });
 
