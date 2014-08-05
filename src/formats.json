@@ -249,7 +249,13 @@
         },
         {
           "name": "forceMode",
-          "type": "enum"
+          "type": "enum",
+          "enum": {
+            "0": "None",
+            "1": "ForceHeading",
+            "2": "ForceGoalVoltage",
+            "3": "ForceCurrentWaypointIndex"
+          }
         },
         {
           "name": "forceHeading",
