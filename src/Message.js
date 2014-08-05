@@ -290,7 +290,13 @@ Message.payloadLength = function(payload) {
 };
 
 Message.checksum = function(buffer) {
-  return crc.crc16ccitt(buffer);
+  // big endian uint16_t
+  var checksum = new Buffer(crc.crc16ccitt(buffer), 'hex');
+
+  // convert to little endian uint16_t
+  var convert = new Buffer(2);
+  convert.writeUInt16LE(checksum.readUInt16BE(0), 0);
+  return convert.toString('hex');
 };
 
 // node export

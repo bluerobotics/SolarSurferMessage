@@ -131,7 +131,7 @@ describe('Message', function() {
     var packet;
 
     beforeEach(function(){
-      packet = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792e85f7';
+      packet = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792ef785';
 
       Message.configure(config);
     });
@@ -177,12 +177,12 @@ describe('Message', function() {
         version: 1,
         format: 0,
         message: 'The SolarSurfer is going to Hawaii! Hopefully.',
-        checksum: '85f7'
+        checksum: 'f785'
       });
     });
 
     it('should apply a conversion if supplied for number types', function(){
-      var message = Message.decode('010101d8bc');
+      var message = Message.decode('010101bcd8');
       expect(message.num).to.equal(3.2);
     });
   });
@@ -306,7 +306,7 @@ describe('Message', function() {
   describe('the checksum function', function(){
     it('should produce correct crc16ccitt checksums', function(){
       var checksum = Message.checksum(new Buffer('9a', 'hex'));
-      expect(checksum).to.equal('c303');
+      expect(checksum).to.equal('03c3');
     });
   });
 
@@ -315,12 +315,12 @@ describe('Message', function() {
       Message.loadConfigFile();
     });
 
-    // it('should decode 01030299ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100c516', function(){
-    //   var data = '01030299ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100c516';
-    //   // this should not throw an error
-    //   Message.decode(data);
-    //   console.log(Message.decode(data));
-    // });
+    it('should decode 01029A99ECC29A99054201E803000002645A29054C050000000000000000000000000000000000000000000100000100B257', function(){
+      var data = '01029A99ECC29A99054201E803000002645A29054C050000000000000000000000000000000000000000000100000100B257';
+      // this should not throw an error
+      Message.decode(data);
+      console.log(Message.decode(data))
+    });
   });
 
 });

@@ -55,6 +55,8 @@ bitmap | 8 | each bit is an isolated value
 char | 8 | 7 bit ascii value
 hex | 8 | 00 .. ff
 
+To be compatible with the ARM architecture, all data types are represented in little endian format.
+
 ## JavaScript API
 
 The JavaScript and C libraries have identical APIs.
