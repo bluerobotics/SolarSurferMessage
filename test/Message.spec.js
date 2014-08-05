@@ -1,7 +1,7 @@
 // import
 var chai = require('chai');
 var expect = chai.expect;
-var Message = require('src/Message.js');
+var Message = require('../src/Message.js');
 
 // common vars
 // var config;
@@ -23,7 +23,8 @@ describe('Message', function() {
         },
         "checksum": {
           "name": "checksum",
-          "type": "uint16_t"
+          "type": "hex",
+          "qty": 2
         }
       },
       "formats": {
@@ -36,6 +37,21 @@ describe('Message', function() {
               "name": "message",
               "type": "char",
               "qty": 46
+            },
+            "checksum"
+          ]
+        },
+        "1": {
+          "name": "test/conversion",
+          "payload": [
+            "version",
+            "format",
+            {
+              "name": "num",
+              "type": "uint8_t",
+              "conversion": {
+                "coeffs": [1, 2.2]
+              }
             },
             "checksum"
           ]
@@ -115,7 +131,7 @@ describe('Message', function() {
     var packet;
 
     beforeEach(function(){
-      packet = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792e8a40';
+      packet = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792e85f7';
 
       Message.configure(config);
     });
@@ -158,11 +174,16 @@ describe('Message', function() {
     it('should not error for a valid packet', function(){
       var message = Message.decode(packet);
       expect(message).to.deep.equal({
-        version: '1',
-        format: '0',
+        version: 1,
+        format: 0,
         message: 'The SolarSurfer is going to Hawaii! Hopefully.',
-        checksum: '8a40'
+        checksum: '85f7'
       });
+    });
+
+    it('should apply a conversion if supplied for number types', function(){
+      var message = Message.decode('010101d8bc');
+      expect(message.num).to.equal(3.2);
     });
   });
 
@@ -173,41 +194,105 @@ describe('Message', function() {
       }).to.throw(Message.DecodeValueException);
     });
 
-    it('should convert a uint8_t to a number', function(){
-      var output = Message.decodeValue(10, 'uint8_t');
-      expect(output).to.equal(10);
+    it('should decode a uint8_t', function(){
+      var output = Message.decodeValue(new Buffer('01', 'hex'), 'uint8_t');
+      expect(output).to.equal(1);
+    });
+
+    it('should decode a uint16_t', function(){
+      var output = Message.decodeValue(new Buffer('0001', 'hex'), 'uint16_t');
+      expect(output).to.equal(256);
+    });
+
+    it('should decode a uint32_t', function(){
+      var output = Message.decodeValue(new Buffer('00000001', 'hex'), 'uint32_t');
+      expect(output).to.equal(16777216);
+    });
+
+    it('should decode a int8_t', function(){
+      var output = Message.decodeValue(new Buffer('01', 'hex'), 'int8_t');
+      expect(output).to.equal(1);
+
+      output = Message.decodeValue(new Buffer('ff', 'hex'), 'int8_t');
+      expect(output).to.equal(-1);
+
+      output = Message.decodeValue(new Buffer('80', 'hex'), 'int8_t');
+      expect(output).to.equal(-Math.pow(2, 8-1));
+    });
+
+    it('should decode a int16_t', function(){
+      var output = Message.decodeValue(new Buffer('0080', 'hex'), 'int16_t');
+      expect(output).to.equal(-Math.pow(2, 16-1));
+    });
+
+    it('should decode a int32_t', function(){
+      var output = Message.decodeValue(new Buffer('00000080', 'hex'), 'int32_t');
+      expect(output).to.equal(-Math.pow(2, 32-1));
+    });
+
+    it('should decode a float', function(){
+      var output = Message.decodeValue(new Buffer('c3f54840', 'hex'), 'float');
+      expect(Math.abs(3.14-output)).to.be.below(0.001);
+    });
+
+    it('should decode a double', function(){
+      var output = Message.decodeValue(new Buffer('1f85eb51b81e0940', 'hex'), 'double');
+      expect(Math.abs(3.14-output)).to.be.below(0.001);
+    });
+
+    it('should decode an enum', function(){
+      var map = {
+        "0": "this",
+        "1": 42
+      };
+      var output = Message.decodeValue(new Buffer('01', 'hex'), 'enum', map);
+      expect(output).to.equal(42);
+    });
+
+    it('should decode a bitmap', function(){
+      var map = {
+        "0": "pos_name0",
+        "1": "pos_name1",
+        "2": "pos_name2"
+      };
+      var output = Message.decodeValue(new Buffer('06', 'hex'), 'bitmap', map);
+      expect(output).to.deep.equal({
+        pos_name0: false,
+        pos_name1: true,
+        pos_name2: true
+      });
+    });
+
+    it('should convert a char to an ascii character', function(){
+      var output = Message.decodeValue(new Buffer('68', 'hex'), 'char');
+      expect(output).to.equal('h');
+    });
+
+    it('should pass through a hex string', function(){
+      var output = Message.decodeValue(new Buffer('ab', 'hex'), 'hex');
+      expect(output).to.equal('ab');
     });
   });
 
-  describe('the hexToBytes function', function() {
-    it('should convert a string of hex characters to a byte array', function(){
-      var hex = '4252'; // B(lue) R(robotics)
-      var bytes = Message.hexToBytes(hex);
-      expect(bytes).to.deep.equal([66, 82]);
+  describe('the encodeValue function', function() {
+    it('should encode a float', function(){
+      var buffer = Message.encodeValue(3.14, 'float');
+      expect(buffer.toString('hex')).to.equal('c3f54840');
     });
-  });
 
-  describe('the bytesToHex function', function() {
-    it('should convert a byte array to a string of hex characters', function(){
-      var bytes = [66, 82]; // B(lue) R(robotics)
-      var hex = Message.bytesToHex(bytes);
-      expect(hex).to.deep.equal('4252');
+    it('should encode a double', function(){
+      var buffer = Message.encodeValue(3.14, 'double');
+      expect(buffer.toString('hex')).to.equal('1f85eb51b81e0940');
     });
-  });
 
-  describe('the hexToAscii function', function() {
-    it('should convert a string of hex characters to an ascii string', function(){
-      var hex = '4252'; // B(lue) R(robotics)
-      var str = Message.hexToAscii(hex);
-      expect(str).to.equal('BR');
+    it('should encode a char string', function(){
+      var buffer = Message.encodeValue('hello', 'char');
+      expect(buffer.toString('hex')).to.equal('68656c6c6f');
     });
-  });
 
-  describe('the asciiToHex function', function() {
-    it('should convert an ascii string to a string of hex characters', function(){
-      var str = 'BR';
-      var hex = Message.asciiToHex(str);
-      expect(hex).to.equal('4252');
+    it('should pass through a hex string', function(){
+      var buffer = Message.encodeValue(new Buffer('ab', 'hex'), 'hex');
+      expect(buffer.toString('hex')).to.equal('ab');
     });
   });
 
@@ -216,6 +301,26 @@ describe('Message', function() {
       Message.configure(config);
       expect(Message.formatLength(Message.formats[0])).to.equal(50);
     });
+  });
+
+  describe('the checksum function', function(){
+    it('should produce correct crc16ccitt checksums', function(){
+      var checksum = Message.checksum(new Buffer('9a', 'hex'));
+      expect(checksum).to.equal('c303');
+    });
+  });
+
+  describe('regressions', function() {
+    beforeEach(function(){
+      Message.loadConfigFile();
+    });
+
+    // it('should decode 01030299ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100c516', function(){
+    //   var data = '01030299ecc29a99054201e803000002645a29054c050000000000000000000000000000000000000000000100000100c516';
+    //   // this should not throw an error
+    //   Message.decode(data);
+    //   console.log(Message.decode(data));
+    // });
   });
 
 });

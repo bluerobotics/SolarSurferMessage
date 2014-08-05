@@ -1,6 +1,6 @@
 {
   "name": "SolarSurferMessage",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The communication standard for the SolarSurfer project.",
   "main": "src/Message.js",
   "scripts": {
@@ -20,8 +20,9 @@
   },
   "homepage": "https://github.com/bluerobotics/SolarSurferMessage",
   "dependencies": {
-    "lodash": "^2.4.1",
-    "crc": "^2.1.1"
+    "crc": "^2.1.1",
+    "extend-error": "0.0.2",
+    "lodash": "^2.4.1"
   },
   "devDependencies": {
     "chai": "^1.9.1",

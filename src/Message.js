@@ -1,6 +1,9 @@
 var fs = require('fs');
 var _ = require('lodash');
-var crc = require('crc');
+var crc = require('crc'); // https://github.com/alexgorbatchev/node-crc
+require('extend-error');
+// Node Buffer lib: http://nodejs.org/docs/v0.6.0/api/buffers.html
+// Helpful CRC checker: http://www.lammertbies.nl/comm/info/crc-calculation.html
 
 // declare static class
 function Message() {}
@@ -12,16 +15,15 @@ Message.types = {
   'uint8_t': {'size': 1},
   'uint16_t': {'size': 2},
   'uint32_t': {'size': 4},
-  'uint64_t': {'size': 8},
   'int8_t': {'size': 1},
   'int16_t': {'size': 2},
   'int32_t': {'size': 4},
-  'int64_t': {'size': 8},
   'float': {'size': 4},
   'double': {'size': 8},
   'enum': {'size': 1},
   'bitmap': {'size': 1},
-  'char': {'size': 1}
+  'char': {'size': 1},
+  'hex': {'size': 1}
 };
 
 // custom exceptions
@@ -37,16 +39,9 @@ var custom_errors = [
   'DecodeFormatException',
   'DecodeChecksumException',
   'DecodeValueException'];
-var custom_error_handler = function(message) { this.message = message; };
 for(var i = 0; i < custom_errors.length; i++) {
-  Message[custom_errors[i]] = custom_error_handler;
-  Message[custom_errors[i]].prototype = new Error();
+  Message[custom_errors[i]] = Error.extend(custom_errors[i]);
 }
-
-// custom decode exception
-// Message.DecodeException = function(msg) {
-//   this.msg = msg;
-// };
 
 // custom decode exception
 Message.loadConfigFile = function(file) {
@@ -110,7 +105,7 @@ Message.configure = function(config) {
     if(format.payload[1].name != 'format' || format.payload[1].type != 'uint8_t')
       throw new Message.FormatRequiredFieldException('Field "format" should be the second field in the format.');
     var last_idx = format.payload.length - 1;
-    if(format.payload[last_idx].name != 'checksum' || format.payload[last_idx].type != 'uint16_t')
+    if(format.payload[last_idx].name != 'checksum' || format.payload[last_idx].type != 'hex')
       throw new Message.FormatRequiredFieldException('Field "checksum" should be the last field in the format.');
 
     // save format to class
@@ -125,21 +120,21 @@ Message.encode = function(message) {
 };
 
 // decode message
-Message.decode = function(packet_hex_string) {
+Message.decode = function(hex) {
   // convert to byte array
-  packet = this.hexToBytes(packet_hex_string);
+  var packet = new Buffer(hex, 'hex');
 
   // incoming packet must be a 50-character byte array
   if(packet.length < 4)
     throw new Message.DecodeLengthException('All packets must be at least 4 bytes long');
 
   // all packets must have a version at 0
-  var version = this.decodeValue(packet[0], 'uint8_t');
+  var version = this.decodeValue(packet.slice(0, 1), 'uint8_t');
   if(version != this.version)
     throw new Message.DecodeVersionException('Unknown version "' + String(version) + '"');
 
   // all packets must have a format at 1
-  var format_index = this.decodeValue(packet[1], 'uint8_t');
+  var format_index = this.decodeValue(packet.slice(1, 2), 'uint8_t');
   var format = this.formats[format_index];
   if(format === undefined)
     throw new Message.DecodeFormatException('Unknown format "' + String(format_index) + '"');
@@ -150,13 +145,14 @@ Message.decode = function(packet_hex_string) {
     throw new Message.DecodeLengthException('Packet length "' + String(packet.length) + '" should be "' + String(expected_length) + '"');
 
   // all packets must have a checksum as the last two bytes
-  var checksum = this.bytesToHex(packet.slice(packet.length-2), 'uint16_t');
-  var actual_checksum = crc.crc16ccitt(this.bytesToHex(packet.slice(0, packet.length-2)));
+  var checksum = packet.slice(packet.length-2).toString('hex');
+  var actual_checksum = Message.checksum(packet.slice(0, packet.length-2));
   if(checksum != actual_checksum)
     throw new Message.DecodeChecksumException('Checksum "' + checksum + '" should be "' + actual_checksum + '"');
 
   // expand packet
   var message = {};
+  var pos = 0;
   for(var i = 0; i < format.payload.length; i++) {
     var field = format.payload[i];
     var data_type_size = Message.types[field.type].size;
@@ -164,8 +160,29 @@ Message.decode = function(packet_hex_string) {
     // decode field values
     message[field.name] = [];
     for(var j = 0; j < field.qty; j++) {
-      var raw = packet.splice(0, data_type_size);
-      message[field.name].push(this.decodeValue(this.bytesToHex(raw), field.type));
+      var raw = packet.slice(pos, pos+data_type_size);
+      pos += data_type_size;
+
+      // decode (with map, if applicable)
+      var decoded;
+      if(field.type == 'enum')
+        decoded = this.decodeValue(raw, field.type, field.enum);
+      if(field.type == 'bitmap')
+        decoded = this.decodeValue(raw, field.type, field.bitmap);
+      else
+        decoded = this.decodeValue(raw, field.type);
+
+      // apply conversion if applicable
+      if(field.conversion !== undefined && field.conversion.coeffs !== undefined) {
+        var x = decoded, y = 0;
+        for(var k = 0; k < field.conversion.coeffs.length; k++) {
+          y += Math.pow(x, k) * field.conversion.coeffs[k];
+        }
+        decoded = y;
+      }
+
+      // save value
+      message[field.name].push(decoded);
     }
 
     // flatten if qty is one
@@ -173,80 +190,108 @@ Message.decode = function(packet_hex_string) {
       message[field.name] = message[field.name][0];
 
     // concat string types
-    else if(field.type == 'char')
+    else if(field.type == 'char' || field.type == 'hex')
       message[field.name] = message[field.name].join('');
   }
 
-  // special image handling - cache pieces and only return image once all are collected
-  // if()
+  // TODO: special image handling - cache pieces and only return image once all are collected
 
   // return decoded message
   return message;
 };
 
-Message.decodeValue = function(input, type) {
-  if(Message.types[type] === undefined)
-    throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
-
+Message.decodeValue = function(buffer, type, map) {
   // unsigned integer types
-  if(type.substr(0, 4) == 'uint')
-    return input;
-  else if(type == 'char')
-    return this.hexToAscii(input);
-};
+  if(type == 'uint8_t') return buffer.readUInt8(0);
+  else if(type == 'uint16_t') return buffer.readUInt16LE(0);
+  else if(type == 'uint32_t') return buffer.readUInt32LE(0);
 
-Message.hexToBytes = function(hex) {
-  // force conversion
-  hex = hex.toString();
+  // signed integer types
+  else if(type == 'int8_t') return buffer.readInt8(0);
+  else if(type == 'int16_t') return buffer.readInt16LE(0);
+  else if(type == 'int32_t') return buffer.readInt32LE(0);
 
-  var bytes = [];
-  for (var i = 0; i < hex.length; i += 2)
-    bytes.push(parseInt(hex.substr(i, 2), 16));
+  // floating point types
+  else if(type == 'float') return buffer.readFloatLE(0);
+  else if(type == 'double') return buffer.readDoubleLE(0);
 
-  return bytes;
-};
-
-Message.bytesToHex = function(bytes) {
-  var hex = '';
-  for (var i = 0; i < bytes.length; i ++)
-    hex += bytes[i].toString(16);
-
-  return hex;
-};
-
-Message.hexToAscii = function(hex) {
-  // force conversion
-  hex = hex.toString();
-
-  var str = '';
-  for (var i = 0; i < hex.length; i += 2)
-    str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-
-  return str;
-};
-
-Message.asciiToHex = function(str) {
-  var arr = [];
-  for (var i = 0, l = str.length; i < l; i ++) {
-    var hex = Number(str.charCodeAt(i)).toString(16);
-    arr.push(hex);
+  // map types
+  else if(type == 'enum') {
+    var index = buffer.readUInt8(0);
+    if(map[index] === undefined) throw new Message.DecodeValueException('Unpopulated enum index "' + String(index) + '"');
+    else return map[index];
+  }
+  else if(type == 'bitmap') {
+    var value = buffer.readUInt8(0);
+    var keys = Object.keys(map);
+    var obj = {};
+    for(var i = 0; i < keys.length; i++)
+      obj[map[keys[i]]] = !!(value & Math.pow(2, parseInt(keys[i])));
+    return obj;
   }
 
-  return arr.join('');
+  // string types
+  else if(type == 'char') return buffer.toString('ascii');
+  else if(type == 'hex') return buffer.toString('hex');
+
+  // error for unknown
+  else throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
+};
+
+Message.encodeValue = function(value, type) {
+  var buffer;
+
+  // unsigned integer types
+  if(type == 'uint8_t') {
+    buffer = new Buffer(1);
+    buffer.writeUInt8(value, 0);
+  }
+  // else if(type == 'uint16_t') return buffer.readUInt16LE(0);
+  // else if(type == 'uint32_t') return buffer.readUInt32LE(0);
+
+  // signed integer types
+  // else if(type == 'int8_t') return buffer.readInt8(0);
+  // else if(type == 'int16_t') return buffer.readInt16LE(0);
+  // else if(type == 'int32_t') return buffer.readInt32LE(0);
+
+  // floating point types
+  else if(type == 'float') {
+    buffer = new Buffer(4);
+    buffer.writeFloatLE(value, 0);
+  }
+  else if(type == 'double') {
+    buffer = new Buffer(8);
+    buffer.writeDoubleLE(value, 0);
+  }
+
+  // map types
+
+  // string types
+  else if(type == 'char') buffer = new Buffer(value, 'ascii');
+  else if(type == 'hex') buffer = new Buffer(value, 'hex');
+
+  // error for unknown
+  else throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
+
+  return buffer;
 };
 
 Message.formatLength = function(format) {
-    var sum = 0;
+  var sum = 0;
 
-    for(var i = 0; i < format.payload.length; i++)
-      sum += format.payload[i].qty * Message.types[format.payload[i].type].size;
+  for(var i = 0; i < format.payload.length; i++)
+    sum += format.payload[i].qty * Message.types[format.payload[i].type].size;
 
-    return sum;
+  return sum;
 };
 
 Message.payloadLength = function(payload) {
-    return Message.types[payload.type].size;
-}
+  return Message.types[payload.type].size;
+};
+
+Message.checksum = function(buffer) {
+  return crc.crc16ccitt(buffer);
+};
 
 // node export
 module.exports = Message;

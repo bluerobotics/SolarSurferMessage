@@ -48,20 +48,19 @@ uint16_t | 16 | 0 .. 65,535
 int16_t | 16 | -32,768 .. 32,767
 uint32_t | 32 | 0 .. 4,294,967,295
 int32_t | 32 | -2,147,483,648 .. 2,147,483,647
-uint64_t | 64 | 0 .. 18,446,744,073,709,551,615
-int64_t | 64 | -9,223,372,036,854,775,808 .. 9,223,372,036,854,775,807
 float | 32 | -3.4E38 .. 3.4E38
 double | 64 | -1.7E308 .. 1.7E308
 enum | 8 | the entire value is used in a lookup map
 bitmap | 8 | each bit is an isolated value
-char | 8 | 2 byte ascii value
+char | 8 | 7 bit ascii value
+hex | 8 | 00 .. ff
 
 ## JavaScript API
 
 The JavaScript and C libraries have identical APIs.
 
-* `Message.encode(msg)` - returns a byte array of the supplied message
-* `Message.decode(byte_array)` - returns the message represented by the supplied byte_array
+* `Message.encode(msg_object)` - returns a hex string of the supplied message
+* `Message.decode(hex_string)` - returns the message represented by the supplied hex_string
 
 A typical application looks like this:
 
@@ -70,7 +69,7 @@ var msg = {
     format: 1,
     version: 1
 }
-var byte_array = SolarSurferComm.encode(msg);
+var hex = SolarSurferComm.encode(msg);
 ```
 
 ## Cross-Compiling C Library
@@ -87,7 +86,17 @@ The C files are now available in `output/`.
 
 This project uses [semantic versioning](http://semver.org/).
 
-### v1.0.0 - tbd
+### v0.1.0 - tbd
 
 * Message format v1
 * Initial release
+
+## TODO
+
+* Decoding
+  * images
+* Encoding
+  * integers
+  * conversion factors
+  * images
+  * map types

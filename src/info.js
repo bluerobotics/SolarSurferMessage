@@ -12,20 +12,15 @@ Object.keys(Message.formats).forEach(function(i) {
 
   console.log('[' + i + '] ' + format.name + ', ' + String(Message.formatLength(format)) + ' bytes, multi-packet:', format.multipacket);
 
-  var position = 0;
-
+  // print information about each field in this message type
+  var pos = 0;
   Object.keys(format.payload).forEach(function(j) {
   	var payload = format.payload[j];
+  	var comment = payload.comment ? ' [' + payload.comment + ']' : '';
 
-  	var comment;
-  	if (typeof payload.comment == 'undefined') {
-  		comment = ''
-  	} else {
-  		comment = '[' + payload.comment + ']';
-  	}
+  	console.log('\t' + pos + '-' + (pos+Message.payloadLength(payload)-1) + ':    \t' + payload.name + ' (' + payload.type + ')' + comment);
 
-  	console.log('\t' + position + '-' + (position+Message.payloadLength(payload)-1) + ':\t' + payload.name + ' (' + payload.type + ') ' + comment);
-  	position += Message.payloadLength(payload);
+  	pos += Message.payloadLength(payload);
   });
+
 });
-// for(var i = 0; i < Message.formats)
