@@ -762,6 +762,12 @@
           "type": "uint8_t",
           "comment": "Only set if it is 1 or greater. Otherwise ignored."
         },
+        { "name": "inCallback",
+          "type": "uint8_t"
+        },
+        { "name": "satcomErrorCode",
+          "type": "uint8_t"
+        },
         "checksum"
       ]
     }
