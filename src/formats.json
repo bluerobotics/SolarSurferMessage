@@ -710,6 +710,58 @@
           "name": "powerLoad",
           "type": "float"
         },
+        {
+          "name": "cmdtelemetryPeriod",
+          "type": "enum",
+          "enum": {
+            "0": "No Change",
+            "1": "5",
+            "2": "10",
+            "3": "20",
+            "4": "30",
+            "5": "45",
+            "6": "60",
+            "7": "90",
+            "8": "120",
+            "9": "180",
+            "10": "360",
+            "11": "720",
+            "12": "1440",
+            "13": "2880"
+          }
+        },
+        {
+          "name": "cmdforceMode",
+          "type": "bitmap",
+          "bitmap": {
+            "0": "ThrusterOff",
+            "1": "ForceHeading"
+          }
+        },
+        {
+          "name": "cmdforceHeading",
+          "type": "int8_t",
+          "conversion": {
+            "encoded_units": "180/128 degrees true",
+            "decoded_units": "degrees true",
+            "coeffs":  [0,1.40625]
+          },
+          "comment": "Only used if force heading mode is enabled."
+        },
+        { "name": "cmdgoalVoltage",
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "millivolts",
+            "decoded_units": "volts",
+            "coeffs":  [0,0.001]
+          },
+          "comment": "Only set if it is 1.0 V or greater. Otherwise ignored."  
+        },
+        {
+          "name": "cmdforceCurrentWaypointIndex",
+          "type": "uint8_t",
+          "comment": "Only set if it is 1 or greater. Otherwise ignored."
+        },
         "checksum"
       ]
     }
