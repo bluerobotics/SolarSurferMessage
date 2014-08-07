@@ -77,148 +77,304 @@
         "format",
         {
           "name": "latitude",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "longitude",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "fix",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "enum": {
+            "0": "No Fix",
+            "1": "Dead Reckoning Only",
+            "2": "2D-Fix",
+            "3": "3D-Fix",
+            "4": "GPS+Dead Reckoning",
+            "5": "Time Only"
+          }
         },
         {
           "name": "time",
-          "type": "uint32_t"
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "GPS minute time-of-week",
+            "decoded_units": "GPS minute time-of-week",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "altitude",
           "type": "int8_t",
-          "comment": "half-meters MSL"
+          "conversion": {
+            "encoded_units": "half-meters MSL",
+            "decoded_units": "meters MSL",
+            "coeffs":  [0,2]
+          }
         },
         {
           "name": "course",
           "type": "int8_t",
-          "comment": "180/128ths of a degree from true north",
           "conversion": {
-            "encoded_units": "180/128 degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [1.40625,0]
+            "encoded_units": "180/128 degrees true",
+            "decoded_units": "degrees true",
+            "coeffs":  [0,1.40625]
           }
         },
         {
           "name": "heading",
           "type": "int8_t",
-          "comment": "180/128ths of a degree from true north",
           "conversion": {
-            "encoded_units": "180/128 degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [1.40625,0]
+            "encoded_units": "180/128 degrees true",
+            "decoded_units": "degrees true",
+            "coeffs":  [0,1.40625]
           }
         },
         {
           "name": "v_load",
           "type": "uint16_t",
-          "comment": "millivolts"
+          "conversion": {
+            "encoded_units": "millivolts",
+            "decoded_units": "volts",
+            "coeffs":  [0,0.001]
+          }
         },
         {
           "name": "v_solar",
           "type": "uint16_t",
-          "comment": "millivolts"
+          "conversion": {
+            "encoded_units": "millivolts",
+            "decoded_units": "volts",
+            "coeffs":  [0,0.001]
+          }
         },
         {
           "name": "p_solar",
-          "type": "int8_t"
+          "type": "int8_t",
+          "conversion": {
+            "encoded_units": "watts",
+            "decoded_units": "watts",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "p_load",
-          "type": "int8_t"
+          "type": "int8_t",
+          "conversion": {
+            "encoded_units": "watts",
+            "decoded_units": "watts",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "p_left",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "watts",
+            "decoded_units": "watts",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "p_right",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "watts",
+            "decoded_units": "watts",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "rotations",
-          "type": "uint16_t"
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "hundred-thousands of rotations",
+            "decoded_units": "rotations",
+            "coeffs":  [0,100000]
+          }
         },
         {
           "name": "rpm_left",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "1/25th rpm",
+            "decoded_units": "rpm",
+            "coeffs":  [0,25]
+          }
         },
         {
           "name": "rpm_right",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "1/25th rpm",
+            "decoded_units": "rpm",
+            "coeffs":  [0,25]
+          }
         },
         { 
           "name": "rollPitchRange",
           "type": "uint8_t",
-          "comment": "average tilt deviation in degrees over last 10 minutes"
+          "conversion": {
+            "encoded_units": "fifth-degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,0.2]
+          }
         },
         { 
           "name": "swellPeriod",
           "type": "uint8_t",
-          "comment": "seconds"
+          "conversion": {
+            "encoded_units": "seconds",
+            "decoded_units": "seconds",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "swellHeight",
           "type": "uint8_t",
-          "comment": "quarter-meters"
+          "conversion": {
+            "encoded_units": "quad-meters",
+            "decoded_units": "meters",
+            "coeffs":  [0,0.25]
+          }
         },
         {
           "name": "tempAir",
           "type": "uint8_t",
-          "comment": "quarter-degrees Celcius offset by -20C, range=(-20C,43C)"
+          "conversion": {
+            "encoded_units": "quad-degrees C offset by -20C",
+            "decoded_units": "degrees C",
+            "coeffs":  [-20,0.25]
+          },
+          "comment": "range=(-20C,43C)"
         },
         {
           "name": "tempWater",
           "type": "uint8_t",
-          "comment": "sixth-degrees Celcius, range=(0C,42C)"
+          "conversion": {
+            "encoded_units": "sexto-degrees C",
+            "decoded_units": "degrees C",
+            "coeffs":  [0,0.1666666667]
+          },
+          "comment": "range=(0C,42C)"
         },
         {
           "name": "pressure",
           "type": "int8_t",
-          "comment": "hectoPascals offset by 1013 hectoPascals (ISO standard)"
+          "conversion": {
+            "encoded_units": "hectoPascals offset by 1013 hectoPascals (ISO standard)",
+            "decoded_units": "Pa",
+            "coeffs":  [101300,100]
+          }
         },
         {
           "name": "pH",
           "type": "int8_t",
-          "comment": "centi-pH-units from 7.0, range=(4.45,9.55)"
+          "conversion": {
+            "encoded_units": "double-centi-pH-units from 7.0",
+            "decoded_units": "pH",
+            "coeffs":  [7,0.02]
+          },
+          "comment": "range=(5.72,8.28)"
         },
         {
           "name": "salinity",
           "type": "int8_t",
-          "comment": "unknown units"
+          "conversion": {
+            "encoded_units": "deci-PSU offset by 27.5 PSU",
+            "decoded_units": "PSU",
+            "coeffs":  [27.5,0.1]
+          }
         },
         {
           "name": "windSpeed",
           "type": "uint16_t",
-          "comment": "cm/s"
+          "conversion": {
+            "encoded_units": "cm/s",
+            "decoded_units": "m/s",
+            "coeffs":  [0,0.01]
+          }
         },
         {
           "name": "windDirection",
           "type": "int8_t",
-          "comment": "180/128ths of a degree from true north"
+          "conversion": {
+            "encoded_units": "180/128 degrees true",
+            "decoded_units": "degrees true",
+            "coeffs":  [0,1.40625]
+          }
         },
-        { "name": "status",
-          "type": "uint16_t",
-          "comment": ""
+        { "name": "status1",
+          "type": "bitmap",
+          "bitmap": {
+            "0": "Null",
+            "1": "GPS-Failure",
+            "2": "Compass-Failure",
+            "3": "Left Thruster Jammed",
+            "4": "Right Thruster Jammed"
+          }
+        },
+        { "name": "status2",
+          "type": "bitmap",
+          "bitmap": {
+            "0": "Null"
+          }
         },
         {
           "name": "currentWaypointIndex",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "index",
+            "decoded_units": "index",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "currentWaypointChecksum",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "checksum",
+            "decoded_units": "checksum",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "commandCount",
-          "type": "uint16_t"
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "commands received",
+            "decoded_units": "commands received",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "telemetryCount",
-          "type": "uint16_t"
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "messages sent",
+            "decoded_units": "messages sent",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "extra1",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "",
+            "decoded_units": "",
+            "coeffs":  [0,1]
+          }
         },
         "checksum"
       ]
@@ -232,7 +388,7 @@
           "name": "telemetryPeriod",
           "type": "enum",
           "enum": {
-            "0": "1",
+            "0": "No Change",
             "1": "5",
             "2": "10",
             "3": "20",
@@ -250,26 +406,35 @@
         },
         {
           "name": "forceMode",
-          "type": "enum",
-          "enum": {
-            "0": "None",
-            "1": "ForceHeading",
-            "2": "ForceGoalVoltage",
-            "3": "ForceCurrentWaypointIndex"
+          "type": "bitmap",
+          "bitmap": {
+            "0": "ThrusterOff",
+            "1": "ForceHeading"
           }
         },
         {
           "name": "forceHeading",
           "type": "int8_t",
-          "comment": "180/128ths of a degree from true north"
+          "conversion": {
+            "encoded_units": "180/128 degrees true",
+            "decoded_units": "degrees true",
+            "coeffs":  [0,1.40625]
+          },
+          "comment": "Only used if force heading mode is enabled."
         },
-        { "name": "forceGoalVoltage",
+        { "name": "goalVoltage",
           "type": "uint16_t",
-          "comment": "millivolts"
+          "conversion": {
+            "encoded_units": "millivolts",
+            "decoded_units": "volts",
+            "coeffs":  [0,0.001]
+          },
+          "comment": "Only set if it is 1.0 V or greater. Otherwise ignored."  
         },
         {
           "name": "forceCurrentWaypointIndex",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "comment": "Only set if it is 1 or greater. Otherwise ignored."
         },
         {
           "name": "waypointID1",
@@ -277,15 +442,29 @@
         },
         { "name": "waypointRadius1",
           "type": "uint8_t",
-          "comment": "meters"
+          "conversion": {
+            "encoded_units": "meters",
+            "decoded_units": "meters",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointLat1",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointLon1",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointID2",
@@ -293,15 +472,29 @@
         },
         { "name": "waypointRadius2",
           "type": "uint8_t",
-          "comment": "meters"
+          "conversion": {
+            "encoded_units": "meters",
+            "decoded_units": "meters",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointLat2",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointLon2",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointID3",
@@ -309,15 +502,29 @@
         },
         { "name": "waypointRadius3",
           "type": "uint8_t",
-          "comment": "meters"
+          "conversion": {
+            "encoded_units": "meters",
+            "decoded_units": "meters",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointLat3",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointLon3",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointID4",
@@ -325,18 +532,31 @@
         },
         { "name": "waypointRadius4",
           "type": "uint8_t",
-          "comment": "meters"
+          "conversion": {
+            "encoded_units": "meters",
+            "decoded_units": "meters",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointLat4",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         {
           "name": "waypointLon4",
-          "type": "float"
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
         },
         "checksum"
-        
       ]
     },
     "4": {

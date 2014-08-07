@@ -33,15 +33,15 @@ Object.keys(Message.formats).forEach(function(i) {
   	} else if ( payload == 'format' ) {
   		type = 'uint8_t';
   		field = 'format';
-  	} else if ( payload == 'checksum' ) {
+  	} else if ( payload.name == 'checksum' ) {
   		type = 'uint16_t';
   		field = 'checksum';
+      payload.qty = 1;
   	} else {
   		if ( payload.type == 'enum' ) {
   			type = 'uint8_t';
   		} else if ( payload.type == 'bitmap' ) {
   			type = 'uint8_t';
-  			array = '[40]';
   		} else {
 	  		type = payload.type;
 	  	}

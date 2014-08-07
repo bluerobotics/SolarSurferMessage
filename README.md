@@ -84,6 +84,14 @@ npm run-script makeclib
 
 The C files are now available in `output/`.
 
+## Testing Messages Directly
+
+```javascript
+var m = require(‘SolarSurferMessage’); OR var m = require(‘src/Message.js’)
+m.loadConfigFile(); 
+m.decode(‘hex string here’)
+```
+
 ## Change History
 
 This project uses [semantic versioning](http://semver.org/).

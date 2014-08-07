@@ -16,9 +16,10 @@ Object.keys(Message.formats).forEach(function(i) {
   var pos = 0;
   Object.keys(format.payload).forEach(function(j) {
   	var payload = format.payload[j];
-  	var comment = payload.comment ? ' [' + payload.comment + ']' : '';
+  	var comment = payload.comment ? ' [' + payload.comment + '] ' : '';
+    var conversion = payload.conversion ? ' [' + payload.conversion.encoded_units + '] ' : '';
 
-  	console.log('\t' + pos + '-' + (pos+Message.payloadLength(payload)-1) + ':    \t' + payload.name + ' (' + payload.type + ')' + comment);
+  	console.log('\t' + pos + '-' + (pos+Message.payloadLength(payload)-1) + ':    \t' + payload.name + ' (' + payload.type + ')' + conversion + comment);
 
   	pos += Message.payloadLength(payload);
   });
