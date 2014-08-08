@@ -100,12 +100,12 @@ Message.configure = function(config) {
       throw new Message.FormatLengthException('Format length "' + String(sum) + '" should be less than 340');
 
     // check required fields
-    if(format.payload[0].name != 'version' || format.payload[1].type != 'uint8_t')
+    if(format.payload[0].name != '_version' || format.payload[1].type != 'uint8_t')
       throw new Message.FormatRequiredFieldException('Field "version" should be the first field in the format.');
-    if(format.payload[1].name != 'format' || format.payload[1].type != 'uint8_t')
+    if(format.payload[1].name != '_format' || format.payload[1].type != 'uint8_t')
       throw new Message.FormatRequiredFieldException('Field "format" should be the second field in the format.');
     var last_idx = format.payload.length - 1;
-    if(format.payload[last_idx].name != 'checksum' || format.payload[last_idx].type != 'hex')
+    if(format.payload[last_idx].name != '_checksum' || format.payload[last_idx].type != 'hex')
       throw new Message.FormatRequiredFieldException('Field "checksum" should be the last field in the format.');
 
     // save format to class

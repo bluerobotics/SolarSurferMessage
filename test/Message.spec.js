@@ -14,15 +14,15 @@ describe('Message', function() {
       "version": "1",
       "shared": {
         "version": {
-          "name": "version",
+          "name": "_version",
           "type": "uint8_t"
         },
         "format": {
-          "name": "format",
+          "name": "_format",
           "type": "uint8_t"
         },
         "checksum": {
-          "name": "checksum",
+          "name": "_checksum",
           "type": "hex",
           "qty": 2
         }
@@ -174,10 +174,10 @@ describe('Message', function() {
     it('should not error for a valid packet', function(){
       var message = Message.decode(packet);
       expect(message).to.deep.equal({
-        version: 1,
-        format: 0,
+        _version: 1,
+        _format: 0,
         message: 'The SolarSurfer is going to Hawaii! Hopefully.',
-        checksum: 'f785'
+        _checksum: 'f785'
       });
     });
 
