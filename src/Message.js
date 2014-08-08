@@ -167,7 +167,7 @@ Message.decode = function(hex) {
       var decoded;
       if(field.type == 'enum')
         decoded = this.decodeValue(raw, field.type, field.enum);
-      if(field.type == 'bitmap')
+      else if(field.type == 'bitmap')
         decoded = this.decodeValue(raw, field.type, field.bitmap);
       else
         decoded = this.decodeValue(raw, field.type);

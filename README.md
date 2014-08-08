@@ -96,10 +96,11 @@ m.decode(‘hex string here’)
 
 This project uses [semantic versioning](http://semver.org/).
 
-### v0.1.0 - tbd
+### v0.1.0 - 2014/08/08
 
-* Message format v1
 * Initial release
+* Message format v1
+* Used for Santa Monica Canyon testing
 
 ## TODO
 

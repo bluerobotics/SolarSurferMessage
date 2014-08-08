@@ -146,7 +146,7 @@ describe('Message', function() {
       Message.configure(config);
     });
 
-    it('should error a packet without the required fields', function(){
+    it('should error on a packet without the required fields', function(){
       expect(function(){
         // missing version, format, and checksum
         Message.decode('');
@@ -284,6 +284,66 @@ describe('Message', function() {
     });
   });
 
+  // describe('the encode function', function() {
+  //   var packet;
+
+  //   beforeEach(function(){
+  //     packet = {};
+
+  //     Message.configure(config);
+  //   });
+
+  //   it('should error on a packet without the required fields', function(){
+  //     expect(function(){
+  //       // missing version, format, and checksum
+  //       Message.encode({});
+  //     }).to.throw(Message.DecodeLengthException);
+  //   });
+
+  //   it('should error if the version does not match', function(){
+  //     expect(function(){
+  //       // version is 0 (should be 1)
+  //       Message.encode('00000000');
+  //     }).to.throw(Message.DecodeVersionException);
+  //   });
+
+  //   it('should error if the format cannot be found', function(){
+  //     expect(function(){
+  //       // correct version (1), incorrect format (99)
+  //       Message.encode('01990000');
+  //     }).to.throw(Message.DecodeFormatException);
+  //   });
+
+  //   it('should error for an incorrect packet length', function(){
+  //     expect(function(){
+  //       // should be a full 50 bytes
+  //       Message.encode(packet.substr(0, 48*2));
+  //     }).to.throw(Message.DecodeLengthException);
+  //   });
+
+  //   it('should error if the checksum fails', function(){
+  //     expect(function(){
+  //       // checksum of 0000 is probably wrong...
+  //       Message.encode(packet.substr(0, 48*2) + '0000');
+  //     }).to.throw(Message.DecodeChecksumException);
+  //   });
+
+  //   it('should not error for a valid packet', function(){
+  //     var message = Message.encode(packet);
+  //     expect(message).to.deep.equal({
+  //       _version: 1,
+  //       _format: 0,
+  //       message: 'The SolarSurfer is going to Hawaii! Hopefully.',
+  //       _checksum: 'f785'
+  //     });
+  //   });
+
+  //   it('should apply a conversion if supplied for number types', function(){
+  //     var message = Message.decode('010101bcd8');
+  //     expect(message.num).to.equal(3.2);
+  //   });
+  // });
+
   describe('the encodeValue function', function() {
     it('should encode a float', function(){
       var buffer = Message.encodeValue(3.14, 'float');
@@ -327,6 +387,13 @@ describe('Message', function() {
 
     it('should decode 01029A99ECC29A99054201E803000002645A29054C050000000000000000000000000000000000000000000100000100B257', function(){
       var data = '01029A99ECC29A99054201E803000002645A29054C050000000000000000000000000000000000000000000100000100B257';
+      // this should not throw an error
+      Message.decode(data);
+      console.log(Message.decode(data))
+    });
+
+    it('should decode 010302000A91330300000000000000000000000000000000000000000000000000000000000000000000000000000000F844', function(){
+      var data = '010302000A91330300000000000000000000000000000000000000000000000000000000000000000000000000000000F844';
       // this should not throw an error
       Message.decode(data);
       console.log(Message.decode(data))
