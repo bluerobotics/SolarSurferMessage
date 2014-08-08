@@ -104,10 +104,5 @@ This project uses [semantic versioning](http://semver.org/).
 
 ## TODO
 
-* Decoding
-  * images
-* Encoding
-  * integers
-  * conversion factors
-  * images
-  * map types
+* encode images
+* decode images
