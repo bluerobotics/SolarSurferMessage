@@ -122,6 +122,16 @@ describe('Message', function() {
       }).to.throw(Message.FormatRequiredFieldException);
     });
 
+    it('should error if enum fields are configured correctly', function(){
+      // TODO: check existence of map
+      // TODO: check that map names are valid JS object attribute names
+    });
+
+    it('should error if bitmap fields are configured correctly', function(){
+      // TODO: check existence of map
+      // TODO: check that map names are valid JS object attribute names
+    });
+
     it('should not error for a valid config', function(){
       Message.configure(config);
     });
