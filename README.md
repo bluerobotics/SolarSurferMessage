@@ -96,9 +96,12 @@ m.decode(‘hex string here’)
 
 This project uses [semantic versioning](http://semver.org/).
 
-### v0.1.1 - tbd
+### v0.2.0 - tbd
 
-* Added bower config for client-side use
+* Message format still v1 (no new or changed messages)
+* TODO: encode images
+* TODO: decode images
+* Added bower config for client-side use (but this doesn't work)
 
 ### v0.1.0 - 2014/08/08
 
@@ -108,5 +111,5 @@ This project uses [semantic versioning](http://semver.org/).
 
 ## TODO
 
-* encode images
-* decode images
+* convert to an Angular module that can be used client-side and server-side
+* use https://github.com/chrisdickinson/bops for client/sever buffer operations
