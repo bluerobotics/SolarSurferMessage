@@ -96,6 +96,10 @@ m.decode(‘hex string here’)
 
 This project uses [semantic versioning](http://semver.org/).
 
+### v0.1.1 - tbd
+
+* Added bower config for client-side use
+
 ### v0.1.0 - 2014/08/08
 
 * Initial release
