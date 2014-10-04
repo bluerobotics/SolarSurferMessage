@@ -18,8 +18,9 @@ Object.keys(Message.formats).forEach(function(i) {
   	var payload = format.payload[j];
   	var comment = payload.comment ? ' [' + payload.comment + '] ' : '';
     var conversion = payload.conversion ? ' [' + payload.conversion.encoded_units + '] ' : '';
+    var array = payload.qty>1 ? '[' + payload.qty + ']' : '';
 
-  	console.log('\t' + pos + '-' + (pos+Message.payloadLength(payload)-1) + ':    \t' + payload.name + ' (' + payload.type + ')' + conversion + comment);
+  	console.log('\t' + pos + '-' + (pos+Message.payloadLength(payload)-1) + ':    \t' + payload.name + array + ' (' + payload.type + ')' + conversion + comment);
 
   	pos += Message.payloadLength(payload);
   });

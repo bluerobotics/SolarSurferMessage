@@ -1,5 +1,5 @@
 {
-  "version": "1",
+  "version": "2",
   "shared": {
     "version": {
       "name": "version",
@@ -71,10 +71,31 @@
       ]
     },
     "2": {
-      "name": "tlm/status",
+      "name": "tlm/shortStatus",
       "payload": [
         "version",
         "format",
+        {
+          "name": "time",
+          "type": "uint32_t",
+          "conversion": {
+            "encoded_units": "GPS millisecond time-of-week",
+            "decoded_units": "GPS millisecond time-of-week",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "fix",
+          "type": "uint8_t",
+          "enum": {
+            "0": "No Fix",
+            "1": "Dead Reckoning Only",
+            "2": "2D-Fix",
+            "3": "3D-Fix",
+            "4": "GPS+Dead Reckoning",
+            "5": "Time Only"
+          }
+        },        
         {
           "name": "latitude",
           "type": "float",
@@ -90,27 +111,6 @@
           "conversion": {
             "encoded_units": "degrees",
             "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "fix",
-          "type": "uint8_t",
-          "enum": {
-            "0": "No Fix",
-            "1": "Dead Reckoning Only",
-            "2": "2D-Fix",
-            "3": "3D-Fix",
-            "4": "GPS+Dead Reckoning",
-            "5": "Time Only"
-          }
-        },
-        {
-          "name": "time",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "GPS minute time-of-week",
-            "decoded_units": "GPS minute time-of-week",
             "coeffs":  [0,1]
           }
         },
@@ -142,6 +142,67 @@
           }
         },
         {
+          "name": "currentWaypointIndex",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "index",
+            "decoded_units": "index",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "currentWaypointLatitude",
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "currentWaypointLongitude",
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
+        },
+        { "name": "status1",
+          "type": "bitmap",
+          "bitmap": {
+            "0": "Null",
+            "1": "GPS-Failure",
+            "2": "Compass-Failure",
+            "3": "Left Thruster Jammed",
+            "4": "Right Thruster Jammed"
+          }
+        },
+        { "name": "status2",
+          "type": "bitmap",
+          "bitmap": {
+            "0": "Null"
+          }
+        },
+        {
+          "name": "commandCount",
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "commands received",
+            "decoded_units": "commands received",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "telemetryCount",
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "messages sent",
+            "decoded_units": "messages sent",
+            "coeffs":  [0,1]
+          }
+        },                
+        {
           "name": "v_load",
           "type": "uint16_t",
           "conversion": {
@@ -151,26 +212,8 @@
           }
         },
         {
-          "name": "v_solar",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "millivolts",
-            "decoded_units": "volts",
-            "coeffs":  [0,0.001]
-          }
-        },
-        {
-          "name": "p_solar",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "watts",
-            "decoded_units": "watts",
-            "coeffs":  [0,1]
-          }
-        },
-        {
           "name": "p_load",
-          "type": "int8_t",
+          "type": "uint8_t",
           "conversion": {
             "encoded_units": "watts",
             "decoded_units": "watts",
@@ -196,12 +239,234 @@
           }
         },
         {
-          "name": "rotations",
+          "name": "rpm_left",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "1/25th rpm",
+            "decoded_units": "rpm",
+            "coeffs":  [0,25]
+          }
+        },
+        {
+          "name": "rpm_right",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "1/25th rpm",
+            "decoded_units": "rpm",
+            "coeffs":  [0,25]
+          }
+        },
+        { 
+          "name": "rollPitchRange",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "fifth-degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,0.2]
+          }
+        },
+        { 
+          "name": "swellPeriod",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "seconds",
+            "decoded_units": "seconds",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "swellHeight",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "quad-meters",
+            "decoded_units": "meters",
+            "coeffs":  [0,0.25]
+          }
+        },
+        {
+          "name": "tempWater",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "sexto-degrees C",
+            "decoded_units": "degrees C",
+            "coeffs":  [0,0.1666666667]
+          },
+          "comment": "range=(0C,42C)"
+        },
+        {
+          "name": "extra",
+          "type": "uint8_t",
+          "qty": 4
+        },
+        "checksum"
+      ]
+    },
+    "3": {
+      "name": "tlm/longStatus",
+      "payload": [
+        "version",
+        "format",
+        {
+          "name": "time",
+          "type": "uint32_t",
+          "conversion": {
+            "encoded_units": "GPS millisecond time-of-week",
+            "decoded_units": "GPS millisecond time-of-week",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "fix",
+          "type": "uint8_t",
+          "enum": {
+            "0": "No Fix",
+            "1": "Dead Reckoning Only",
+            "2": "2D-Fix",
+            "3": "3D-Fix",
+            "4": "GPS+Dead Reckoning",
+            "5": "Time Only"
+          }
+        },        
+        {
+          "name": "latitude",
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "longitude",
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "altitude",
+          "type": "int8_t",
+          "conversion": {
+            "encoded_units": "half-meters MSL",
+            "decoded_units": "meters MSL",
+            "coeffs":  [0,2]
+          }
+        },
+        {
+          "name": "course",
+          "type": "int8_t",
+          "conversion": {
+            "encoded_units": "180/128 degrees true",
+            "decoded_units": "degrees true",
+            "coeffs":  [0,1.40625]
+          }
+        },
+        {
+          "name": "heading",
+          "type": "int8_t",
+          "conversion": {
+            "encoded_units": "180/128 degrees true",
+            "decoded_units": "degrees true",
+            "coeffs":  [0,1.40625]
+          }
+        },
+        {
+          "name": "currentWaypointIndex",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "index",
+            "decoded_units": "index",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "currentWaypointLatitude",
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "currentWaypointLongitude",
+          "type": "float",
+          "conversion": {
+            "encoded_units": "degrees",
+            "decoded_units": "degrees",
+            "coeffs":  [0,1]
+          }
+        },
+        { "name": "status1",
+          "type": "bitmap",
+          "bitmap": {
+            "0": "Null",
+            "1": "GPS-Failure",
+            "2": "Compass-Failure",
+            "3": "Left Thruster Jammed",
+            "4": "Right Thruster Jammed"
+          }
+        },
+        { "name": "status2",
+          "type": "bitmap",
+          "bitmap": {
+            "0": "Null"
+          }
+        },
+        {
+          "name": "commandCount",
           "type": "uint16_t",
           "conversion": {
-            "encoded_units": "hundred-thousands of rotations",
-            "decoded_units": "rotations",
-            "coeffs":  [0,100000]
+            "encoded_units": "commands received",
+            "decoded_units": "commands received",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "telemetryCount",
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "messages sent",
+            "decoded_units": "messages sent",
+            "coeffs":  [0,1]
+          }
+        },                
+        {
+          "name": "v_load",
+          "type": "uint16_t",
+          "conversion": {
+            "encoded_units": "millivolts",
+            "decoded_units": "volts",
+            "coeffs":  [0,0.001]
+          }
+        },
+        {
+          "name": "p_load",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "watts",
+            "decoded_units": "watts",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "p_left",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "watts",
+            "decoded_units": "watts",
+            "coeffs":  [0,1]
+          }
+        },
+        {
+          "name": "p_right",
+          "type": "uint8_t",
+          "conversion": {
+            "encoded_units": "watts",
+            "decoded_units": "watts",
+            "coeffs":  [0,1]
           }
         },
         {
@@ -315,71 +580,15 @@
             "coeffs":  [0,1.40625]
           }
         },
-        { "name": "status1",
-          "type": "bitmap",
-          "bitmap": {
-            "0": "Null",
-            "1": "GPS-Failure",
-            "2": "Compass-Failure",
-            "3": "Left Thruster Jammed",
-            "4": "Right Thruster Jammed"
-          }
-        },
-        { "name": "status2",
-          "type": "bitmap",
-          "bitmap": {
-            "0": "Null"
-          }
-        },
         {
-          "name": "currentWaypointIndex",
+          "name": "extra",
           "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "index",
-            "decoded_units": "index",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "currentWaypointChecksum",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "checksum",
-            "decoded_units": "checksum",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "commandCount",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "commands received",
-            "decoded_units": "commands received",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "telemetryCount",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "messages sent",
-            "decoded_units": "messages sent",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "extra1",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "",
-            "decoded_units": "",
-            "coeffs":  [0,1]
-          }
+          "qty": 47
         },
         "checksum"
       ]
     },
-    "3": {
+    "4": {
       "name": "cmd/control",
       "payload": [
         "version",
@@ -559,7 +768,7 @@
         "checksum"
       ]
     },
-    "4": {
+    "5": {
       "name": "tlm/image",
       "multipacket": true,
       "payload": [
@@ -581,7 +790,7 @@
         "checksum"
       ]
     },
-    "5": {
+    "6": {
       "name": "tlm/diagnostic",
       "payload": [
         "version",

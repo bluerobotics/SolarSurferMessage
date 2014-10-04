@@ -286,7 +286,7 @@ Message.formatLength = function(format) {
 };
 
 Message.payloadLength = function(payload) {
-  return Message.types[payload.type].size;
+  return Message.types[payload.type].size*payload.qty;
 };
 
 Message.checksum = function(buffer) {
