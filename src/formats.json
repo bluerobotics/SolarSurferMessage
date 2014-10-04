@@ -172,16 +172,24 @@
           "type": "bitmap",
           "bitmap": {
             "0": "Null",
-            "1": "GPS-Failure",
-            "2": "Compass-Failure",
-            "3": "Left Thruster Jammed",
-            "4": "Right Thruster Jammed"
+            "1": "GPS Okay",
+            "2": "IMU Okay",
+            "3": "Compass Okay",
+            "4": "BLDC Monitor Okay",
+            "5": "Satcom Okay",
+            "6": "RC Radio Connected"
           }
         },
         { "name": "status2",
           "type": "bitmap",
           "bitmap": {
-            "0": "Null"
+            "0": "Null",
+            "1": "Left Thruster Okay",
+            "2": "Right Thruster Okay",
+            "3": "Null",
+            "4": "Null",
+            "5": "Navigation Box Dry",
+            "6": "Battery Box Dry"
           }
         },
         {
@@ -403,16 +411,24 @@
           "type": "bitmap",
           "bitmap": {
             "0": "Null",
-            "1": "GPS-Failure",
-            "2": "Compass-Failure",
-            "3": "Left Thruster Jammed",
-            "4": "Right Thruster Jammed"
+            "1": "GPS Okay",
+            "2": "IMU Okay",
+            "3": "Compass Okay",
+            "4": "BLDC Monitor Okay",
+            "5": "Satcom Okay",
+            "6": "RC Radio Connected"
           }
         },
         { "name": "status2",
           "type": "bitmap",
           "bitmap": {
-            "0": "Null"
+            "0": "Null",
+            "1": "Left Thruster Okay",
+            "2": "Right Thruster Okay",
+            "3": "Null",
+            "4": "Null",
+            "5": "Navigation Box Dry",
+            "6": "Battery Box Dry"
           }
         },
         {
