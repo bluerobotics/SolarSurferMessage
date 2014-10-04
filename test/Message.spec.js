@@ -7,22 +7,22 @@ var Message = require('../src/Message.js');
 // var config;
  
 describe('Message', function() {
-  var config;
+  var config, good_packet_raw, good_packet;
 
   beforeEach(function(){
     config = {
       "version": "1",
       "shared": {
         "version": {
-          "name": "version",
+          "name": "_version",
           "type": "uint8_t"
         },
         "format": {
-          "name": "format",
+          "name": "_format",
           "type": "uint8_t"
         },
         "checksum": {
-          "name": "checksum",
+          "name": "_checksum",
           "type": "hex",
           "qty": 2
         }
@@ -58,8 +58,15 @@ describe('Message', function() {
         }
       }
     };
+    good_packet_raw = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792ef785';
+    good_packet = {
+      _version: 1,
+      _format: 0,
+      message: 'The SolarSurfer is going to Hawaii! Hopefully.',
+      _checksum: 'f785'
+    };
 
-    // note to self: do not call Message.configure() because it is under test in this script
+    // note to self: do not call Message.configure() here because it is under test in this script
   });
 
   describe('the configure function', function() {
@@ -122,21 +129,27 @@ describe('Message', function() {
       }).to.throw(Message.FormatRequiredFieldException);
     });
 
+    it('should error if enum fields are configured correctly', function(){
+      // TODO: check existence of map
+      // TODO: check that map names are valid JS object attribute names
+    });
+
+    it('should error if bitmap fields are configured correctly', function(){
+      // TODO: check existence of map
+      // TODO: check that map names are valid JS object attribute names
+    });
+
     it('should not error for a valid config', function(){
       Message.configure(config);
     });
   });
 
   describe('the decode function', function() {
-    var packet;
-
     beforeEach(function(){
-      packet = '010054686520536f6c617253757266657220697320676f696e6720746f204861776169692120486f706566756c6c792ef785';
-
       Message.configure(config);
     });
 
-    it('should error a packet without the required fields', function(){
+    it('should error on a packet without the required fields', function(){
       expect(function(){
         // missing version, format, and checksum
         Message.decode('');
@@ -160,25 +173,20 @@ describe('Message', function() {
     it('should error for an incorrect packet length', function(){
       expect(function(){
         // should be a full 50 bytes
-        Message.decode(packet.substr(0, 48*2));
+        Message.decode(good_packet_raw.substr(0, 48*2));
       }).to.throw(Message.DecodeLengthException);
     });
 
     it('should error if the checksum fails', function(){
       expect(function(){
         // checksum of 0000 is probably wrong...
-        Message.decode(packet.substr(0, 48*2) + '0000');
+        Message.decode(good_packet_raw.substr(0, 48*2) + '0000');
       }).to.throw(Message.DecodeChecksumException);
     });
 
     it('should not error for a valid packet', function(){
-      var message = Message.decode(packet);
-      expect(message).to.deep.equal({
-        version: 1,
-        format: 0,
-        message: 'The SolarSurfer is going to Hawaii! Hopefully.',
-        checksum: 'f785'
-      });
+      var message = Message.decode(good_packet_raw);
+      expect(message).to.deep.equal(good_packet);
     });
 
     it('should apply a conversion if supplied for number types', function(){
@@ -274,7 +282,82 @@ describe('Message', function() {
     });
   });
 
+  describe('the encode function', function() {
+    beforeEach(function(){
+      delete good_packet._checksum;
+      Message.configure(config);
+    });
+
+    it('should error on a packet without the required fields', function(){
+      expect(function(){
+        // missing version and format
+        Message.encode({});
+      }).to.throw(Message.EncodeMissingFieldException);
+    });
+
+    it('should error if the version does not match', function(){
+      expect(function(){
+        // version is 0 (should be 1)
+        Message.encode({
+          _version: 0,
+          _format: 0
+        });
+      }).to.throw(Message.EncodeVersionException);
+    });
+
+    it('should error if the format cannot be found', function(){
+      expect(function(){
+        // correct version (1), incorrect format (99)
+        Message.encode({
+          _version: 1,
+          _format: 99
+        });
+      }).to.throw(Message.EncodeFormatException);
+    });
+
+    it('should not error for a valid packet', function(){
+      var message = Message.encode(good_packet);
+      expect(message).to.equal(good_packet_raw);
+    });
+
+    // it('should apply a conversion if supplied for number types', function(){
+    //   var message = Message.decode('010101bcd8');
+    //   expect(message.num).to.equal(3.2);
+    // });
+  });
+
   describe('the encodeValue function', function() {
+
+    it('should encode a uint8_t', function(){
+      var output = Message.encodeValue(1, 'uint8_t');
+      expect(output.toString('hex')).to.equal('01');
+    });
+
+    it('should encode a uint16_t', function(){
+      var output = Message.encodeValue(256, 'uint16_t');
+      expect(output.toString('hex')).to.equal('0001');
+    });
+
+    it('should encode a uint32_t', function(){
+      var output = Message.encodeValue(16777216, 'uint32_t');
+      expect(output.toString('hex')).to.equal('00000001');
+    });
+
+    it('should encode a int8_t', function(){
+      var output = Message.encodeValue(-1, 'int8_t');
+      expect(output.toString('hex')).to.equal('ff');
+    });
+
+    it('should encode a int16_t', function(){
+      var output = Message.encodeValue(-Math.pow(2, 16-1), 'int16_t');
+      expect(output.toString('hex')).to.equal('0080');
+    });
+
+    it('should encode a int32_t', function(){
+      var output = Message.encodeValue(-Math.pow(2, 32-1), 'int32_t');
+      expect(output.toString('hex')).to.equal('00000080');
+    });
+
     it('should encode a float', function(){
       var buffer = Message.encodeValue(3.14, 'float');
       expect(buffer.toString('hex')).to.equal('c3f54840');
@@ -283,6 +366,29 @@ describe('Message', function() {
     it('should encode a double', function(){
       var buffer = Message.encodeValue(3.14, 'double');
       expect(buffer.toString('hex')).to.equal('1f85eb51b81e0940');
+    });
+
+    it('should encode an enum', function(){
+      var map = {
+        "0": "this",
+        "1": 42
+      };
+      var output = Message.encodeValue(42, 'enum', map);
+      expect(output.toString('hex')).to.equal('01');
+    });
+
+    it('should encode a bitmap', function(){
+      var map = {
+        "0": "pos_name0",
+        "1": "pos_name1",
+        "2": "pos_name2"
+      };
+      var output = Message.encodeValue({
+        pos_name0: false,
+        pos_name1: true,
+        pos_name2: true
+      }, 'bitmap', map);
+      expect(output.toString('hex')).to.equal('06');
     });
 
     it('should encode a char string', function(){
@@ -306,7 +412,7 @@ describe('Message', function() {
   describe('the checksum function', function(){
     it('should produce correct crc16ccitt checksums', function(){
       var checksum = Message.checksum(new Buffer('9a', 'hex'));
-      expect(checksum).to.equal('03c3');
+      expect(checksum.toString('hex')).to.equal('03c3');
     });
   });
 
@@ -319,7 +425,44 @@ describe('Message', function() {
       var data = '01029A99ECC29A99054201E803000002645A29054C050000000000000000000000000000000000000000000100000100B257';
       // this should not throw an error
       Message.decode(data);
-      console.log(Message.decode(data))
+    });
+
+    it('should decode 010302000A91330300000000000000000000000000000000000000000000000000000000000000000000000000000000F844', function(){
+      var data = '010302000A91330300000000000000000000000000000000000000000000000000000000000000000000000000000000F844';
+      // this should not throw an error
+      Message.decode(data);
+    });
+
+    it('should encode this object', function(){
+      var data = {
+        _version: 1,
+        _format: 3,
+        telemetryPeriod: '10',
+        forceMode: { ThrusterOff: false, ForceHeading: false },
+        forceHeading: 14.0625,
+        goalVoltage: 13.201,
+        forceCurrentWaypointIndex: 3,
+        waypointID1: 0,
+        waypointRadius1: 0,
+        waypointLat1: 0,
+        waypointLon1: 0,
+        waypointID2: 0,
+        waypointRadius2: 0,
+        waypointLat2: 0,
+        waypointLon2: 0,
+        waypointID3: 0,
+        waypointRadius3: 0,
+        waypointLat3: 0,
+        waypointLon3: 0,
+        waypointID4: 0,
+        waypointRadius4: 0,
+        waypointLat4: 0,
+        waypointLon4: 0
+      };
+      // this should not throw an error
+      var packet = Message.encode(data);
+
+      expect(packet).to.equal('010302000a91330300000000000000000000000000000000000000000000000000000000000000000000000000000000f844');
     });
   });
 

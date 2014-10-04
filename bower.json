@@ -1,0 +1,24 @@
+{
+  "name": "SolarSurferMessage",
+  "version": "0.1.0",
+  "authors": [
+    "BlueRobotics"
+  ],
+  "description": "The communication standard for the SolarSurfer project.",
+  "main": [
+    "src/Message.js"
+  ],
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "lodash": "^2.4.1"
+  },
+  "overrides": {
+  },
+  "keywords": [
+  ],
+  "license": "Apache v2",
+  "homepage": "https://github.com/bluerobotics/SolarSurferMessage",
+  "private": true
+}

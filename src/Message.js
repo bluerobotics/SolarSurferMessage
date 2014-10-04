@@ -38,7 +38,12 @@ var custom_errors = [
   'DecodeVersionException',
   'DecodeFormatException',
   'DecodeChecksumException',
-  'DecodeValueException'];
+  'DecodeValueException',
+  'EncodeMissingFieldException',
+  'EncodeVersionException',
+  'EncodeFormatException',
+  'EncodeValueException',
+  'EncodeConversionTooComplicated'];
 for(var i = 0; i < custom_errors.length; i++) {
   Message[custom_errors[i]] = Error.extend(custom_errors[i]);
 }
@@ -100,23 +105,17 @@ Message.configure = function(config) {
       throw new Message.FormatLengthException('Format length "' + String(sum) + '" should be less than 340');
 
     // check required fields
-    if(format.payload[0].name != 'version' || format.payload[1].type != 'uint8_t')
+    if(format.payload[0].name != '_version' || format.payload[1].type != 'uint8_t')
       throw new Message.FormatRequiredFieldException('Field "version" should be the first field in the format.');
-    if(format.payload[1].name != 'format' || format.payload[1].type != 'uint8_t')
+    if(format.payload[1].name != '_format' || format.payload[1].type != 'uint8_t')
       throw new Message.FormatRequiredFieldException('Field "format" should be the second field in the format.');
     var last_idx = format.payload.length - 1;
-    if(format.payload[last_idx].name != 'checksum' || format.payload[last_idx].type != 'hex')
+    if(format.payload[last_idx].name != '_checksum' || format.payload[last_idx].type != 'hex')
       throw new Message.FormatRequiredFieldException('Field "checksum" should be the last field in the format.');
 
     // save format to class
     this.formats[i] = format;
   }, this);
-};
-
-// encode message
-Message.encode = function(message) {
-  var packets = [];
-  return packets;
 };
 
 // decode message
@@ -146,7 +145,7 @@ Message.decode = function(hex) {
 
   // all packets must have a checksum as the last two bytes
   var checksum = packet.slice(packet.length-2).toString('hex');
-  var actual_checksum = Message.checksum(packet.slice(0, packet.length-2));
+  var actual_checksum = Message.checksum(packet.slice(0, packet.length-2)).toString('hex');
   if(checksum != actual_checksum)
     throw new Message.DecodeChecksumException('Checksum "' + checksum + '" should be "' + actual_checksum + '"');
 
@@ -167,7 +166,7 @@ Message.decode = function(hex) {
       var decoded;
       if(field.type == 'enum')
         decoded = this.decodeValue(raw, field.type, field.enum);
-      if(field.type == 'bitmap')
+      else if(field.type == 'bitmap')
         decoded = this.decodeValue(raw, field.type, field.bitmap);
       else
         decoded = this.decodeValue(raw, field.type);
@@ -238,21 +237,107 @@ Message.decodeValue = function(buffer, type, map) {
   else throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
 };
 
-Message.encodeValue = function(value, type) {
-  var buffer;
+// encode message
+Message.encode = function(message) {
+  // all packets must have a version
+  if(message._version === undefined)
+    throw new Message.EncodeMissingFieldException('Field "_version" must be present');
+  if(message._version != this.version)
+    throw new Message.EncodeVersionException('Unknown version "' + String(message._version) + '"');
+
+  // all packets must have a format at 1
+  if(message._format === undefined)
+    throw new Message.EncodeMissingFieldException('Field "_format" must be present');
+  var format = this.formats[message._format];
+  if(format === undefined)
+    throw new Message.EncodeFormatException('Unknown format "' + String(message._format) + '"');
+
+  // compress packet
+  var buffer = new Buffer(Message.formatLength(format));
+  var pos = 0;
+  for(var i = 0; i < format.payload.length; i++) {
+    var field = format.payload[i];
+    var data_type_size = Message.types[field.type].size;
+
+    // encode field values
+    for(var j = 0; j < field.qty; j++) {
+      var encoded;
+
+      if(field.name != '_checksum') {
+        // make sure field is present
+        if(message[field.name] === undefined)
+          throw new Message.EncodeMissingFieldException('Field "' + field.name + '" must be present');
+
+        // extract field value
+        var raw;
+        if(field.qty == 1) raw = message[field.name];
+        else raw = message[field.name][j];
+
+        // apply conversion if applicable
+        if(field.conversion !== undefined && field.conversion.coeffs !== undefined) {
+          if(field.conversion.coeffs.length == 1)
+            raw = raw / field.conversion.coeffs[0]; // not sure this makes sense or is even useful
+          else if(field.conversion.coeffs.length == 2)
+            raw = (raw - field.conversion.coeffs[0]) / field.conversion.coeffs[1];
+          else
+            throw new Message.EncodeConversionTooComplicated('I cannot encode a polynomial of degree "' + String(field.conversion.coeffs.length) + '"');
+        }
+
+        // encode (with map, if applicable)
+        if(field.type == 'enum')
+          encoded = this.encodeValue(raw, field.type, field.enum);
+        else if(field.type == 'bitmap')
+          encoded = this.encodeValue(raw, field.type, field.bitmap);
+        else
+          encoded = this.encodeValue(raw, field.type);
+      }
+
+      // save value
+      encoded.copy(buffer, pos);
+      pos += data_type_size;
+    }
+  }
+
+  // checksum
+  var checksum = Message.checksum(buffer.slice(0, buffer.length-2));
+  checksum.copy(buffer, buffer.length-checksum.length);
+
+  // TODO: special image handling
+
+  // return encoded message
+  return buffer.toString('hex');
+};
+
+Message.encodeValue = function(value, type, map) {
+  var buffer, keys, i;
 
   // unsigned integer types
   if(type == 'uint8_t') {
     buffer = new Buffer(1);
     buffer.writeUInt8(value, 0);
   }
-  // else if(type == 'uint16_t') return buffer.readUInt16LE(0);
-  // else if(type == 'uint32_t') return buffer.readUInt32LE(0);
+  else if(type == 'uint16_t') {
+    buffer = new Buffer(2);
+    buffer.writeUInt16LE(value, 0);
+  }
+  else if(type == 'uint32_t') {
+    buffer = new Buffer(4);
+    buffer.writeUInt32LE(value, 0);
+  }
 
   // signed integer types
-  // else if(type == 'int8_t') return buffer.readInt8(0);
-  // else if(type == 'int16_t') return buffer.readInt16LE(0);
-  // else if(type == 'int32_t') return buffer.readInt32LE(0);
+  else if(type == 'int8_t') {
+    buffer = new Buffer(1);
+    buffer.writeInt8(value, 0);
+  }
+  else if(type == 'int16_t') {
+    buffer = new Buffer(2);
+    buffer.writeInt16LE(value, 0);
+  }
+  else if(type == 'int32_t') {
+    buffer = new Buffer(4);
+    buffer.writeInt32LE(value, 0);
+  }
 
   // floating point types
   else if(type == 'float') {
@@ -265,13 +350,36 @@ Message.encodeValue = function(value, type) {
   }
 
   // map types
+  else if(type == 'enum') {
+    var index;
+    keys = Object.keys(map);
+    for(i = 0; i < keys.length; i++) {
+      if(map[keys[i]] == value) index = keys[i];
+    }
+    if(index === undefined) throw new Message.EncodeValueException('No enum index for value "' + String(index) + '"');
+
+    buffer = new Buffer(1);
+    buffer.writeUInt8(index, 0);
+  }
+  else if(type == 'bitmap') {
+    var bitmap = 0;
+    keys = Object.keys(map);
+    for(i = 0; i < keys.length; i++) {
+      var key = map[keys[i]];
+      if(value[key] === undefined) throw new Message.EncodeValueException('Bitmap key "' + String(key) + '" not found');
+      if(value[key]) bitmap += Math.pow(2, parseInt(keys[i]));
+    }
+
+    buffer = new Buffer(1);
+    buffer.writeUInt8(bitmap, 0);
+  }
 
   // string types
   else if(type == 'char') buffer = new Buffer(value, 'ascii');
   else if(type == 'hex') buffer = new Buffer(value, 'hex');
 
   // error for unknown
-  else throw new Message.DecodeValueException('Unknown data type "' + String(type) + '"');
+  else throw new Message.EncodeValueException('Unknown data type "' + String(type) + '"');
 
   return buffer;
 };
@@ -296,7 +404,7 @@ Message.checksum = function(buffer) {
   // convert to little endian uint16_t
   var convert = new Buffer(2);
   convert.writeUInt16LE(checksum.readUInt16BE(0), 0);
-  return convert.toString('hex');
+  return convert;
 };
 
 // node export
