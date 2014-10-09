@@ -13,6 +13,290 @@
       "name": "_checksum",
       "type": "hex",
       "qty": 2
+    },
+    "time": {
+      "name": "time",
+      "type": "uint32_t",
+      "conversion": {
+        "encoded_units": "GPS millisecond time-of-week",
+        "decoded_units": "GPS millisecond time-of-week",
+        "coeffs":  [0,1]
+      }
+    },
+    "fix": {
+      "name": "fix",
+      "type": "uint8_t",
+      "enum": {
+        "0": "No Fix",
+        "1": "Dead Reckoning Only",
+        "2": "2D-Fix",
+        "3": "3D-Fix",
+        "4": "GPS+Dead Reckoning",
+        "5": "Time Only"
+      }
+    },        
+    "latitude": {
+      "name": "latitude",
+      "type": "float",
+      "conversion": {
+        "encoded_units": "degrees",
+        "decoded_units": "degrees",
+        "coeffs":  [0,1]
+      }
+    },
+    "longitude": {
+      "name": "longitude",
+      "type": "float",
+      "conversion": {
+        "encoded_units": "degrees",
+        "decoded_units": "degrees",
+        "coeffs":  [0,1]
+      }
+    },
+    "altitude": {
+      "name": "altitude",
+      "type": "int8_t",
+      "conversion": {
+        "encoded_units": "half-meters MSL",
+        "decoded_units": "meters MSL",
+        "coeffs":  [0,2]
+      }
+    },
+    "course": {
+      "name": "course",
+      "type": "int8_t",
+      "conversion": {
+        "encoded_units": "180/128 degrees true",
+        "decoded_units": "degrees true",
+        "coeffs":  [0,1.40625]
+      }
+    },
+    "heading": {
+      "name": "heading",
+      "type": "int8_t",
+      "conversion": {
+        "encoded_units": "180/128 degrees true",
+        "decoded_units": "degrees true",
+        "coeffs":  [0,1.40625]
+      }
+    },
+    "currentWaypointIndex": {
+      "name": "currentWaypointIndex",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "index",
+        "decoded_units": "index",
+        "coeffs":  [0,1]
+      }
+    },
+    "currentWaypointLatitude": {
+      "name": "currentWaypointLatitude",
+      "type": "float",
+      "conversion": {
+        "encoded_units": "degrees",
+        "decoded_units": "degrees",
+        "coeffs":  [0,1]
+      }
+    },
+    "currentWaypointLongitude": {
+      "name": "currentWaypointLongitude",
+      "type": "float",
+      "conversion": {
+        "encoded_units": "degrees",
+        "decoded_units": "degrees",
+        "coeffs":  [0,1]
+      }
+    },
+    "status1": { 
+      "name": "status1",
+      "type": "bitmap",
+      "bitmap": {
+        "0": "Null",
+        "1": "GPS Okay",
+        "2": "IMU Okay",
+        "3": "Compass Okay",
+        "4": "BLDC Monitor Okay",
+        "5": "Satcom Okay",
+        "6": "RC Radio Connected"
+      }
+    },
+    "status2": { 
+      "name": "status2",
+      "type": "bitmap",
+      "bitmap": {
+        "0": "Null",
+        "1": "Left Thruster Okay",
+        "2": "Right Thruster Okay",
+        "3": "Null",
+        "4": "Null",
+        "5": "Navigation Box Dry",
+        "6": "Battery Box Dry"
+      }
+    },
+    "commandCount": {
+      "name": "commandCount",
+      "type": "uint16_t",
+      "conversion": {
+        "encoded_units": "commands received",
+        "decoded_units": "commands received",
+        "coeffs":  [0,1]
+      }
+    },
+    "telemetryCount": {
+      "name": "telemetryCount",
+      "type": "uint16_t",
+      "conversion": {
+        "encoded_units": "messages sent",
+        "decoded_units": "messages sent",
+        "coeffs":  [0,1]
+      }
+    },                
+    "v_load": {
+      "name": "v_load",
+      "type": "uint16_t",
+      "conversion": {
+        "encoded_units": "millivolts",
+        "decoded_units": "volts",
+        "coeffs":  [0,0.001]
+      }
+    },
+    "p_load": {
+      "name": "p_load",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "watts",
+        "decoded_units": "watts",
+        "coeffs":  [0,1]
+      }
+    },
+    "p_left": {
+      "name": "p_left",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "watts",
+        "decoded_units": "watts",
+        "coeffs":  [0,1]
+      }
+    },
+    "p_right": {
+      "name": "p_right",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "watts",
+        "decoded_units": "watts",
+        "coeffs":  [0,1]
+      }
+    },
+    "rpm_left": {
+      "name": "rpm_left",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "1/25th rpm",
+        "decoded_units": "rpm",
+        "coeffs":  [0,25]
+      }
+    },
+    "rpm_right": {
+      "name": "rpm_right",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "1/25th rpm",
+        "decoded_units": "rpm",
+        "coeffs":  [0,25]
+      }
+    },
+    "rollPitchRange": { 
+      "name": "rollPitchRange",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "fifth-degrees",
+        "decoded_units": "degrees",
+        "coeffs":  [0,0.2]
+      }
+    },
+    "swellPeriod": { 
+      "name": "swellPeriod",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "seconds",
+        "decoded_units": "seconds",
+        "coeffs":  [0,1]
+      }
+    },
+    "swellHeight": {
+      "name": "swellHeight",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "quad-meters",
+        "decoded_units": "meters",
+        "coeffs":  [0,0.25]
+      }
+    },
+    "tempAir": {
+      "name": "tempAir",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "quad-degrees C offset by -20C",
+        "decoded_units": "degrees C",
+        "coeffs":  [-20,0.25]
+      },
+      "comment": "range=(-20C,43C)"
+    },
+    "tempWater": {
+      "name": "tempWater",
+      "type": "uint8_t",
+      "conversion": {
+        "encoded_units": "sexto-degrees C",
+        "decoded_units": "degrees C",
+        "coeffs":  [0,0.1666666667]
+      },
+      "comment": "range=(0C,42C)"
+    },
+    "pressure": {
+      "name": "pressure",
+      "type": "int8_t",
+      "conversion": {
+        "encoded_units": "hectoPascals offset by 1013 hectoPascals (ISO standard)",
+        "decoded_units": "Pa",
+        "coeffs":  [101300,100]
+      }
+    },
+    "pH": {
+      "name": "pH",
+      "type": "int8_t",
+      "conversion": {
+        "encoded_units": "double-centi-pH-units from 7.0",
+        "decoded_units": "pH",
+        "coeffs":  [7,0.02]
+      },
+      "comment": "range=(5.72,8.28)"
+    },
+    "salinity": {
+      "name": "salinity",
+      "type": "int8_t",
+      "conversion": {
+        "encoded_units": "deci-PSU offset by 27.5 PSU",
+        "decoded_units": "PSU",
+        "coeffs":  [27.5,0.1]
+      }
+    },
+    "windSpeed": {
+      "name": "windSpeed",
+      "type": "uint16_t",
+      "conversion": {
+        "encoded_units": "cm/s",
+        "decoded_units": "m/s",
+        "coeffs":  [0,0.01]
+      }
+    },
+    "windDirection": {
+      "name": "windDirection",
+      "type": "int8_t",
+      "conversion": {
+        "encoded_units": "180/128 degrees true",
+        "decoded_units": "degrees true",
+        "coeffs":  [0,1.40625]
+      }
     }
   },
   "formats": {
@@ -75,232 +359,30 @@
       "payload": [
         "version",
         "format",
-        {
-          "name": "time",
-          "type": "uint32_t",
-          "conversion": {
-            "encoded_units": "GPS millisecond time-of-week",
-            "decoded_units": "GPS millisecond time-of-week",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "fix",
-          "type": "uint8_t",
-          "enum": {
-            "0": "No Fix",
-            "1": "Dead Reckoning Only",
-            "2": "2D-Fix",
-            "3": "3D-Fix",
-            "4": "GPS+Dead Reckoning",
-            "5": "Time Only"
-          }
-        },        
-        {
-          "name": "latitude",
-          "type": "float",
-          "conversion": {
-            "encoded_units": "degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "longitude",
-          "type": "float",
-          "conversion": {
-            "encoded_units": "degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "altitude",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "half-meters MSL",
-            "decoded_units": "meters MSL",
-            "coeffs":  [0,2]
-          }
-        },
-        {
-          "name": "course",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "180/128 degrees true",
-            "decoded_units": "degrees true",
-            "coeffs":  [0,1.40625]
-          }
-        },
-        {
-          "name": "heading",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "180/128 degrees true",
-            "decoded_units": "degrees true",
-            "coeffs":  [0,1.40625]
-          }
-        },
-        {
-          "name": "currentWaypointIndex",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "index",
-            "decoded_units": "index",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "currentWaypointLatitude",
-          "type": "float",
-          "conversion": {
-            "encoded_units": "degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "currentWaypointLongitude",
-          "type": "float",
-          "conversion": {
-            "encoded_units": "degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        { "name": "status1",
-          "type": "bitmap",
-          "bitmap": {
-            "0": "Null",
-            "1": "GPS Okay",
-            "2": "IMU Okay",
-            "3": "Compass Okay",
-            "4": "BLDC Monitor Okay",
-            "5": "Satcom Okay",
-            "6": "RC Radio Connected"
-          }
-        },
-        { "name": "status2",
-          "type": "bitmap",
-          "bitmap": {
-            "0": "Null",
-            "1": "Left Thruster Okay",
-            "2": "Right Thruster Okay",
-            "3": "Null",
-            "4": "Null",
-            "5": "Navigation Box Dry",
-            "6": "Battery Box Dry"
-          }
-        },
-        {
-          "name": "commandCount",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "commands received",
-            "decoded_units": "commands received",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "telemetryCount",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "messages sent",
-            "decoded_units": "messages sent",
-            "coeffs":  [0,1]
-          }
-        },                
-        {
-          "name": "v_load",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "millivolts",
-            "decoded_units": "volts",
-            "coeffs":  [0,0.001]
-          }
-        },
-        {
-          "name": "p_load",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "watts",
-            "decoded_units": "watts",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "p_left",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "watts",
-            "decoded_units": "watts",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "p_right",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "watts",
-            "decoded_units": "watts",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "rpm_left",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "1/25th rpm",
-            "decoded_units": "rpm",
-            "coeffs":  [0,25]
-          }
-        },
-        {
-          "name": "rpm_right",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "1/25th rpm",
-            "decoded_units": "rpm",
-            "coeffs":  [0,25]
-          }
-        },
-        { 
-          "name": "rollPitchRange",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "fifth-degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,0.2]
-          }
-        },
-        { 
-          "name": "swellPeriod",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "seconds",
-            "decoded_units": "seconds",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "swellHeight",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "quad-meters",
-            "decoded_units": "meters",
-            "coeffs":  [0,0.25]
-          }
-        },
-        {
-          "name": "tempWater",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "sexto-degrees C",
-            "decoded_units": "degrees C",
-            "coeffs":  [0,0.1666666667]
-          },
-          "comment": "range=(0C,42C)"
-        },
+        "time",
+        "fix",
+        "latitude",
+        "longitude",
+        "altitude",
+        "course",
+        "heading",
+        "currentWaypointIndex",
+        "currentWaypointLatitude",
+        "currentWaypointLongitude",
+        "status1",
+        "status2",
+        "commandCount",
+        "telemetryCount",
+        "v_load",
+        "p_load",
+        "p_left",
+        "p_right",
+        "rpm_left",
+        "rpm_right",
+        "rollPitchRange",
+        "swellPeriod",
+        "swellHeight",
+        "tempWater",
         {
           "name": "extra",
           "type": "uint8_t",
@@ -314,288 +396,36 @@
       "payload": [
         "version",
         "format",
-        {
-          "name": "time",
-          "type": "uint32_t",
-          "conversion": {
-            "encoded_units": "GPS millisecond time-of-week",
-            "decoded_units": "GPS millisecond time-of-week",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "fix",
-          "type": "uint8_t",
-          "enum": {
-            "0": "No Fix",
-            "1": "Dead Reckoning Only",
-            "2": "2D-Fix",
-            "3": "3D-Fix",
-            "4": "GPS+Dead Reckoning",
-            "5": "Time Only"
-          }
-        },        
-        {
-          "name": "latitude",
-          "type": "float",
-          "conversion": {
-            "encoded_units": "degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "longitude",
-          "type": "float",
-          "conversion": {
-            "encoded_units": "degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "altitude",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "half-meters MSL",
-            "decoded_units": "meters MSL",
-            "coeffs":  [0,2]
-          }
-        },
-        {
-          "name": "course",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "180/128 degrees true",
-            "decoded_units": "degrees true",
-            "coeffs":  [0,1.40625]
-          }
-        },
-        {
-          "name": "heading",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "180/128 degrees true",
-            "decoded_units": "degrees true",
-            "coeffs":  [0,1.40625]
-          }
-        },
-        {
-          "name": "currentWaypointIndex",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "index",
-            "decoded_units": "index",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "currentWaypointLatitude",
-          "type": "float",
-          "conversion": {
-            "encoded_units": "degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "currentWaypointLongitude",
-          "type": "float",
-          "conversion": {
-            "encoded_units": "degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,1]
-          }
-        },
-        { "name": "status1",
-          "type": "bitmap",
-          "bitmap": {
-            "0": "Null",
-            "1": "GPS Okay",
-            "2": "IMU Okay",
-            "3": "Compass Okay",
-            "4": "BLDC Monitor Okay",
-            "5": "Satcom Okay",
-            "6": "RC Radio Connected"
-          }
-        },
-        { "name": "status2",
-          "type": "bitmap",
-          "bitmap": {
-            "0": "Null",
-            "1": "Left Thruster Okay",
-            "2": "Right Thruster Okay",
-            "3": "Null",
-            "4": "Null",
-            "5": "Navigation Box Dry",
-            "6": "Battery Box Dry"
-          }
-        },
-        {
-          "name": "commandCount",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "commands received",
-            "decoded_units": "commands received",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "telemetryCount",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "messages sent",
-            "decoded_units": "messages sent",
-            "coeffs":  [0,1]
-          }
-        },                
-        {
-          "name": "v_load",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "millivolts",
-            "decoded_units": "volts",
-            "coeffs":  [0,0.001]
-          }
-        },
-        {
-          "name": "p_load",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "watts",
-            "decoded_units": "watts",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "p_left",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "watts",
-            "decoded_units": "watts",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "p_right",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "watts",
-            "decoded_units": "watts",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "rpm_left",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "1/25th rpm",
-            "decoded_units": "rpm",
-            "coeffs":  [0,25]
-          }
-        },
-        {
-          "name": "rpm_right",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "1/25th rpm",
-            "decoded_units": "rpm",
-            "coeffs":  [0,25]
-          }
-        },
-        { 
-          "name": "rollPitchRange",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "fifth-degrees",
-            "decoded_units": "degrees",
-            "coeffs":  [0,0.2]
-          }
-        },
-        { 
-          "name": "swellPeriod",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "seconds",
-            "decoded_units": "seconds",
-            "coeffs":  [0,1]
-          }
-        },
-        {
-          "name": "swellHeight",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "quad-meters",
-            "decoded_units": "meters",
-            "coeffs":  [0,0.25]
-          }
-        },
-        {
-          "name": "tempAir",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "quad-degrees C offset by -20C",
-            "decoded_units": "degrees C",
-            "coeffs":  [-20,0.25]
-          },
-          "comment": "range=(-20C,43C)"
-        },
-        {
-          "name": "tempWater",
-          "type": "uint8_t",
-          "conversion": {
-            "encoded_units": "sexto-degrees C",
-            "decoded_units": "degrees C",
-            "coeffs":  [0,0.1666666667]
-          },
-          "comment": "range=(0C,42C)"
-        },
-        {
-          "name": "pressure",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "hectoPascals offset by 1013 hectoPascals (ISO standard)",
-            "decoded_units": "Pa",
-            "coeffs":  [101300,100]
-          }
-        },
-        {
-          "name": "pH",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "double-centi-pH-units from 7.0",
-            "decoded_units": "pH",
-            "coeffs":  [7,0.02]
-          },
-          "comment": "range=(5.72,8.28)"
-        },
-        {
-          "name": "salinity",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "deci-PSU offset by 27.5 PSU",
-            "decoded_units": "PSU",
-            "coeffs":  [27.5,0.1]
-          }
-        },
-        {
-          "name": "windSpeed",
-          "type": "uint16_t",
-          "conversion": {
-            "encoded_units": "cm/s",
-            "decoded_units": "m/s",
-            "coeffs":  [0,0.01]
-          }
-        },
-        {
-          "name": "windDirection",
-          "type": "int8_t",
-          "conversion": {
-            "encoded_units": "180/128 degrees true",
-            "decoded_units": "degrees true",
-            "coeffs":  [0,1.40625]
-          }
-        },
+        "time",
+        "fix",
+        "latitude",
+        "longitude",
+        "altitude",
+        "course",
+        "heading",
+        "currentWaypointIndex",
+        "currentWaypointLatitude",
+        "currentWaypointLongitude",
+        "status1",
+        "status2",
+        "commandCount",
+        "telemetryCount",
+        "v_load",
+        "p_load",
+        "p_left",
+        "p_right",
+        "rpm_left",
+        "rpm_right",
+        "rollPitchRange",
+        "swellPeriod",
+        "swellHeight",
+        "tempAir",
+        "tempWater",
+        "pressure",
+        "pH",
+        "salinity",
+        "windSpeed",
+        "windDirection",
         {
           "name": "extra",
           "type": "uint8_t",
