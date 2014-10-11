@@ -785,8 +785,18 @@
           "type": "bitmap",
           "bitmap": {
             "0": "ThrusterOff",
-            "1": "ForceHeading"
+            "1": "ForceHeading",
+            "2": "ForceHoldPosition"
           }
+        },
+        { "name": "forceThrustersOff",
+          "type": "uint8_t"
+        },
+        { "name": "forceHeading",
+          "type": "uint8_t"
+        },
+        { "name": "forceHoldPosition",
+          "type": "uint8_t"
         },
         {
           "name": "cmdforceHeading",
