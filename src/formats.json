@@ -460,7 +460,8 @@
             "12": "720",
             "13": "1440",
             "14": "2880"
-          }
+          },
+          "ignore": 0
         },
         {
           "name": "forceMode",
@@ -488,16 +489,19 @@
             "decoded_units": "volts",
             "coeffs":  [0,0.001]
           },
+          "ignore": 0,
           "comment": "Only set if it is 1.0 V or greater. Otherwise ignored."  
         },
         {
           "name": "forceCurrentWaypointIndex",
           "type": "uint8_t",
+          "ignore": 0,
           "comment": "Only set if it is 1 or greater. Otherwise ignored."
         },
         {
           "name": "waypointID1",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "ignore": 0
         },
         { "name": "waypointRadius1",
           "type": "uint8_t",
@@ -527,7 +531,8 @@
         },
         {
           "name": "waypointID2",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "ignore": 0
         },
         { "name": "waypointRadius2",
           "type": "uint8_t",
@@ -557,7 +562,8 @@
         },
         {
           "name": "waypointID3",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "ignore": 0
         },
         { "name": "waypointRadius3",
           "type": "uint8_t",
@@ -587,7 +593,8 @@
         },
         {
           "name": "waypointID4",
-          "type": "uint8_t"
+          "type": "uint8_t",
+          "ignore": 0
         },
         { "name": "waypointRadius4",
           "type": "uint8_t",
