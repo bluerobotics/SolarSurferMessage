@@ -13,12 +13,14 @@
     "**/.*"
   ],
   "dependencies": {
+    "extend-error": "https://github.com/joshvillbrandt/extend-error.git#master",
     "lodash": "^2.4.1"
   },
-  "overrides": {
+  "devDependencies": {
+    "jasmine-jquery": "~1.7"
   },
-  "keywords": [
-  ],
+  "overrides": {},
+  "keywords": [],
   "license": "Apache v2",
   "homepage": "https://github.com/bluerobotics/SolarSurferMessage",
   "private": true

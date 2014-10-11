@@ -4,8 +4,10 @@
   "description": "The communication standard for the SolarSurfer project.",
   "main": "src/Message.js",
   "scripts": {
-    "test": "mocha -w --reporter spec",
-    "testonce": "mocha --reporter spec",
+    "postinstall": "node_modules/bower/bin/bower install --config.interactive=false",
+    "test": "mocha -w --reporter spec test/*.spec.js",
+    "testkarma": "./node_modules/karma/bin/karma start test/karma.conf.js",
+    "testonce": "set -e; mocha --reporter spec test/*.spec.js; ./node_modules/karma/bin/karma start test/karma.conf.js --single-run",
     "makeclib": "node src/makeclib.js",
     "info": "node src/info.js"
   },
@@ -25,6 +27,12 @@
     "lodash": "^2.4.1"
   },
   "devDependencies": {
+    "bower": ">1.0",
+    "karma": "~0.12.16",
+    "karma-chrome-launcher": "~0.1.3",
+    "karma-jasmine": "~0.1.5",
+    "karma-phantomjs-launcher": "~0.1",
+    "karma-spec-reporter": "0.0.12",
     "chai": "^1.9.1",
     "colors": "^1.0.3",
     "mocha": "^1.20.1"

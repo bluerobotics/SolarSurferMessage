@@ -100,7 +100,8 @@ This project uses [semantic versioning](http://semver.org/).
 
 * Message format v2
 * Refactored telem message into a long and short telem message
-* TODO: Added bower config for client-side use
+* Added bower config for limited client-side use
+  * The only function currently supported in a browser is config parsing
 * Used for Monterey Bay mission
 
 ### v0.1.0 - 2014/08/08
