@@ -87,7 +87,7 @@ The C files are now available in `output/`.
 ## Testing Messages Directly
 
 ```javascript
-var m = require(‘SolarSurferMessage’); OR var m = require(‘src/Message.js’)
+var m = require(‘SolarSurferMessage’); // OR var m = require(‘src/Message.js’)
 m.loadConfigFile(); 
 m.decode(‘hex string here’)
 ```
@@ -98,18 +98,20 @@ This project uses [semantic versioning](http://semver.org/).
 
 ### v0.2.0 - tbd
 
-* Message format still v1 (no new or changed messages)
-* TODO: encode images
-* TODO: decode images
-* Added bower config for client-side use (but this doesn't work)
+* Message format v2
+* Refactored telem message into a long and short telem message
+* TODO: Added bower config for client-side use
+* Used for Monterey Bay mission
 
 ### v0.1.0 - 2014/08/08
 
 * Initial release
 * Message format v1
-* Used for Santa Monica Canyon testing
+* Used for Santa Monica Canyon mission
 
 ## TODO
 
+* TODO: encode images
+* TODO: decode images
 * convert to an Angular module that can be used client-side and server-side
 * use https://github.com/chrisdickinson/bops for client/sever buffer operations

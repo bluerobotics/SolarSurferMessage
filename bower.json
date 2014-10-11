@@ -1,12 +1,13 @@
 {
   "name": "SolarSurferMessage",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "authors": [
     "BlueRobotics"
   ],
   "description": "The communication standard for the SolarSurfer project.",
   "main": [
-    "src/Message.js"
+    "src/Message.js",
+    "src/formats.json"
   ],
   "ignore": [
     "**/.*"

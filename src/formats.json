@@ -18,10 +18,11 @@
       "name": "time",
       "type": "uint32_t",
       "conversion": {
-        "encoded_units": "GPS millisecond time-of-week",
-        "decoded_units": "GPS millisecond time-of-week",
+        "encoded_units": "seconds",
+        "decoded_units": "seconds",
         "coeffs":  [0,1]
-      }
+      },
+      "comment": "Unix time from GPS, seconds since Epoch"
     },
     "fix": {
       "name": "fix",
@@ -137,8 +138,8 @@
       "name": "commandCount",
       "type": "uint16_t",
       "conversion": {
-        "encoded_units": "commands received",
-        "decoded_units": "commands received",
+        "encoded_units": "counts",
+        "decoded_units": "counts",
         "coeffs":  [0,1]
       }
     },
@@ -146,8 +147,8 @@
       "name": "telemetryCount",
       "type": "uint16_t",
       "conversion": {
-        "encoded_units": "messages sent",
-        "decoded_units": "messages sent",
+        "encoded_units": "counts",
+        "decoded_units": "counts",
         "coeffs":  [0,1]
       }
     },                
@@ -436,6 +437,7 @@
     },
     "4": {
       "name": "cmd/control",
+      "commandable": true,
       "payload": [
         "version",
         "format",
