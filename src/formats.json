@@ -465,7 +465,8 @@
           "type": "bitmap",
           "bitmap": {
             "0": "ThrusterOff",
-            "1": "ForceHeading"
+            "1": "ForceHeading",
+            "2": "ForceHoldPosition"
           }
         },
         {
