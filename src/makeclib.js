@@ -27,26 +27,17 @@ Object.keys(Message.formats).forEach(function(i) {
   	var type;
   	var field;
   	var array = '';
-  	if ( payload == 'version' ) {
-  		type = 'uint8_t';
-  		field = 'version';
-  	} else if ( payload == 'format' ) {
-  		type = 'uint8_t';
-  		field = 'format';
-  	} else if ( payload.name == 'checksum' ) {
-  		type = 'uint16_t';
-  		field = 'checksum';
+		if ( payload.type == 'enum' ) {
+			type = 'uint8_t';
+		} else if ( payload.type == 'bitmap' ) {
+			type = 'uint8_t';
+    } else if ( payload.type == 'hex' ) {
+      type = 'uint16_t';
       payload.qty = 1;
-  	} else {
-  		if ( payload.type == 'enum' ) {
-  			type = 'uint8_t';
-  		} else if ( payload.type == 'bitmap' ) {
-  			type = 'uint8_t';
-  		} else {
-	  		type = payload.type;
-	  	}
-	  	field = payload.name;
+		} else {
+  		type = payload.type;
   	}
+  	field = payload.name;
   	if ( payload.qty != null ) {
       if ( payload.qty > 1 )
     		array = '[' + payload.qty + ']';
