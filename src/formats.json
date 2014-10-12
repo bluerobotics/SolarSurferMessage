@@ -466,7 +466,8 @@
           "bitmap": {
             "0": "ThrusterOff",
             "1": "ForceHeading",
-            "2": "ForceHoldPosition"
+            "2": "ForceHoldPosition",
+            "3": "ForceSeaweedRemoval"
           }
         },
         {
@@ -760,6 +761,14 @@
           "type": "float"
         },
         {
+          "name": "rpmLeft",
+          "type": "int16_t"
+        },
+        {
+          "name": "rpmRight",
+          "type": "int16_t"
+        },
+        {
           "name": "cmdtelemetryPeriod",
           "type": "enum",
           "enum": {
@@ -786,7 +795,8 @@
           "bitmap": {
             "0": "ThrusterOff",
             "1": "ForceHeading",
-            "2": "ForceHoldPosition"
+            "2": "ForceHoldPosition",
+            "3": "ForceSeaweedRemoval"
           }
         },
         { "name": "forceThrustersOff",
@@ -796,6 +806,9 @@
           "type": "uint8_t"
         },
         { "name": "forceHoldPosition",
+          "type": "uint8_t"
+        },
+        { "name": "forceSeaweedRemoval",
           "type": "uint8_t"
         },
         {
