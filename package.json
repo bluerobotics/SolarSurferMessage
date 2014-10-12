@@ -22,12 +22,12 @@
   },
   "homepage": "https://github.com/bluerobotics/SolarSurferMessage",
   "dependencies": {
+    "bower": "^1.3.12",
     "crc": "^2.1.1",
     "extend-error": "0.0.2",
     "lodash": "^2.4.1"
   },
   "devDependencies": {
-    "bower": "^1.3.12",
     "karma": "^0.12.24",
     "karma-chrome-launcher": "^0.1.5",
     "karma-jasmine": "^0.2.2",
