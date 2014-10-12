@@ -438,7 +438,7 @@ describe('Message', function() {
         _version: 2,
         _format: 4,
         telemetryPeriod: '10',
-        forceMode: { ThrusterOff: false, ForceHeading: false, ForceHoldPosition: false },
+        forceMode: { ThrusterOff: false, ForceHeading: false, ForceHoldPosition: false, ForceSeaweedRemoval: false },
         forceHeading: 14.0625,
         goalVoltage: 13.201,
         forceCurrentWaypointIndex: 3,
