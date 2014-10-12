@@ -466,7 +466,7 @@
             "decoded_units": "minutes",
             "coeffs":  [0,1]
           },
-          "ignore": 0
+          "ignore": "No Change"
         },
         {
           "name": "forceMode",
@@ -871,6 +871,12 @@
             "10": "IS ASLEEP",
             "11": "NO SLEEP PIN"
           }
+        },
+        { "name": "telemetryCount",
+          "type": "uint16_t"
+        },
+        { "name": "commandCount",
+          "type": "uint16_t"
         },
         { 
           "name": "status1",
