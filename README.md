@@ -96,7 +96,7 @@ m.decode(‘hex string here’)
 
 This project uses [semantic versioning](http://semver.org/).
 
-### v0.2.0 - tbd
+### v0.2.0 - 2014/10/12
 
 * Message format v2
 * Refactored telem message into a long and short telem message
