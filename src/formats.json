@@ -461,6 +461,11 @@
             "13": "1440",
             "14": "2880"
           },
+          "conversion": {
+            "encoded_units": "minutes",
+            "decoded_units": "minutes",
+            "coeffs":  [0,1]
+          },
           "ignore": 0
         },
         {
@@ -476,8 +481,8 @@
           "name": "forceHeading",
           "type": "int8_t",
           "conversion": {
-            "encoded_units": "180/128 degrees true",
-            "decoded_units": "degrees true",
+            "encoded_units": "180/128 degrees",
+            "decoded_units": "degrees",
             "coeffs":  [0,1.40625]
           },
           "comment": "Only used if force heading mode is enabled."
