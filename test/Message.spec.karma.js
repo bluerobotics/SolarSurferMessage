@@ -1,6 +1,3 @@
-// hack for Travis-CI, not sure why $ isn't registered automatically
-$ = window.jQuery;
-
 describe('Message', function(){
   beforeEach(function(){
     jasmine.getJSONFixtures().fixturesPath='base/src';
