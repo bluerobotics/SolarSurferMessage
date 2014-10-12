@@ -1,23 +1,26 @@
 {
   "name": "SolarSurferMessage",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "authors": [
     "BlueRobotics"
   ],
   "description": "The communication standard for the SolarSurfer project.",
   "main": [
-    "src/Message.js"
+    "src/Message.js",
+    "src/formats.json"
   ],
   "ignore": [
     "**/.*"
   ],
   "dependencies": {
+    "extend-error": "https://github.com/joshvillbrandt/extend-error.git#master",
     "lodash": "^2.4.1"
   },
-  "overrides": {
+  "devDependencies": {
+    "jasmine-jquery": "~2.0.5"
   },
-  "keywords": [
-  ],
+  "overrides": {},
+  "keywords": [],
   "license": "Apache v2",
   "homepage": "https://github.com/bluerobotics/SolarSurferMessage",
   "private": true
