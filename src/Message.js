@@ -311,29 +311,29 @@ var factory = function(_) {
     // unsigned integer types
     if(type == 'uint8_t') {
       buffer = new Buffer(1);
-      buffer.writeUInt8(value, 0);
+      buffer.writeUInt8(Math.floor(value), 0);
     }
     else if(type == 'uint16_t') {
       buffer = new Buffer(2);
-      buffer.writeUInt16LE(value, 0);
+      buffer.writeUInt16LE(Math.floor(value), 0);
     }
     else if(type == 'uint32_t') {
       buffer = new Buffer(4);
-      buffer.writeUInt32LE(value, 0);
+      buffer.writeUInt32LE(Math.floor(value), 0);
     }
 
     // signed integer types
     else if(type == 'int8_t') {
       buffer = new Buffer(1);
-      buffer.writeInt8(value, 0);
+      buffer.writeInt8(Math.floor(value), 0);
     }
     else if(type == 'int16_t') {
       buffer = new Buffer(2);
-      buffer.writeInt16LE(value, 0);
+      buffer.writeInt16LE(Math.floor(value), 0);
     }
     else if(type == 'int32_t') {
       buffer = new Buffer(4);
-      buffer.writeInt32LE(value, 0);
+      buffer.writeInt32LE(Math.floor(value), 0);
     }
 
     // floating point types

@@ -501,6 +501,41 @@ describe('Message', function() {
       var packet = Message.encode(data);
     });
 
+    it('should encode object #3', function(){
+      var data = {
+        "_version": "2",
+        "_format": "4",
+        "telemetryPeriod": "No Change",
+        "forceMode": {
+          "ThrusterOff": false,
+          "ForceHeading": true,
+          "ForceHoldPosition": false,
+          "ForceSeaweedRemoval": false
+        },
+        "forceHeading": 101,
+        "goalVoltage": 0,
+        "forceCurrentWaypointIndex": 0,
+        "waypointID1": 0,
+        "waypointRadius1": "",
+        "waypointLat1": "",
+        "waypointLon1": "",
+        "waypointID2": 0,
+        "waypointRadius2": "",
+        "waypointLat2": "",
+        "waypointLon2": "",
+        "waypointID3": 0,
+        "waypointRadius3": "",
+        "waypointLat3": "",
+        "waypointLon3": "",
+        "waypointID4": 0,
+        "waypointRadius4": "",
+        "waypointLat4": "",
+        "waypointLon4": "",
+        "_checksum": ""
+      };
+      // this should not throw an error
+      var packet = Message.encode(data);
+    });
 
   });
 
