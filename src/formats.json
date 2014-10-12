@@ -872,10 +872,16 @@
             "11": "NO SLEEP PIN"
           }
         },
-        { "name": "telemetryCount",
+        { 
+          "name": "telemetryCount",
           "type": "uint16_t"
         },
-        { "name": "commandCount",
+        { 
+          "name": "commandCount",
+          "type": "uint16_t"
+        },
+        { 
+          "name": "timeTillNextSatcom",
           "type": "uint16_t"
         },
         { 
