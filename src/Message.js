@@ -353,7 +353,7 @@ var factory = function(_) {
       for(i = 0; i < keys.length; i++) {
         if(map[keys[i]] == value) index = keys[i];
       }
-      if(index === undefined) throw new Message.EncodeValueException('No enum index for value "' + String(index) + '"');
+      if(index === undefined) throw new Message.EncodeValueException('No enum index for value "' + value + '"');
 
       buffer = new Buffer(1);
       buffer.writeUInt8(index, 0);

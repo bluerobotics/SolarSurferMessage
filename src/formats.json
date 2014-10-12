@@ -463,8 +463,7 @@
           },
           "conversion": {
             "encoded_units": "minutes",
-            "decoded_units": "minutes",
-            "coeffs":  [0,1]
+            "decoded_units": "minutes"
           },
           "ignore": "No Change"
         },

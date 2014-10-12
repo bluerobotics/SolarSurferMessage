@@ -433,7 +433,7 @@ describe('Message', function() {
       Message.decode(data);
     });
 
-    it('should encode this object', function(){
+    it('should encode object #1', function(){
       var data = {
         _version: 2,
         _format: 4,
@@ -464,6 +464,44 @@ describe('Message', function() {
 
       expect(packet).to.equal('020403000a91330300000000000000000000000000000000000000000000000000000000000000000000000000000000ef82');
     });
+
+    it('should encode object #2', function(){
+      var data = {
+        "_version": "2",
+        "_format": "4",
+        "telemetryPeriod": "No Change",
+        "forceMode": {
+          "ThrusterOff": false,
+          "ForceHeading": false,
+          "ForceHoldPosition": false,
+          "ForceSeaweedRemoval": false
+        },
+        "forceHeading": "",
+        "goalVoltage": 0,
+        "forceCurrentWaypointIndex": 0,
+        "waypointID1": 0,
+        "waypointRadius1": "",
+        "waypointLat1": "",
+        "waypointLon1": "",
+        "waypointID2": 0,
+        "waypointRadius2": "",
+        "waypointLat2": "",
+        "waypointLon2": "",
+        "waypointID3": 0,
+        "waypointRadius3": "",
+        "waypointLat3": "",
+        "waypointLon3": "",
+        "waypointID4": 0,
+        "waypointRadius4": "",
+        "waypointLat4": "",
+        "waypointLon4": "",
+        "_checksum": ""
+      };
+      // this should not throw an error
+      var packet = Message.encode(data);
+    });
+
+
   });
 
 });
